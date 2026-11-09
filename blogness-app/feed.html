@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n-title="nav.feed">Blogness</title>
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fahkwang:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-row">
+      <span class="wordmark">Blogness</span>
+      <span style="display:flex">
+        <a class="icon-btn" href="/notifiche.html" data-i18n-aria="nav.notifiche"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span class="pip"></span></a>
+        <a class="icon-btn" href="/contatti.html?tab=chat" data-i18n-aria="common.chat"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3 3 10.5l7 3 3 7z"/><path d="m10 13.5 4.5-4.5"/></svg></a>
+      </span>
+    </div>
+  </header>
+  <nav class="stories" id="stories" aria-label="Storie"></nav>
+  <div class="utabs" id="filters" role="group" data-i18n-aria="feed.filterLabel" style="padding:0 16px">
+    <button type="button" data-type="" aria-pressed="true" data-i18n="feed.all"></button>
+    <button type="button" data-type="friends" aria-pressed="false" data-i18n="feed.friends"></button>
+    <button type="button" data-type="community" aria-pressed="false" data-i18n="feed.community"></button>
+    <button type="button" data-type="articles" aria-pressed="false" data-i18n="feed.articles"></button>
+  </div>
+  <main class="feedlist" id="list"><div class="pad"><div class="skeleton"></div></div></main>
+</div>
+<nav class="tabs" id="tabs" aria-label="Menu"></nav>
+<script type="module" src="/js/app/feed.js"></script>
+</body>
+</html>
