@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n-title="nav.proposte">Blogness</title>
+<meta name="theme-color" content="#FAFBFC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fahkwang:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-row"><h1 data-i18n="prop.title"></h1><span class="muted" id="today"></span></div>
+  </header>
+  <div class="pills" id="seg" role="group" data-i18n-aria="prop.groupLabel">
+    <button type="button" data-tab="day" aria-pressed="true" data-i18n="prop.day"></button>
+    <button type="button" data-tab="events" aria-pressed="false" data-i18n="prop.events"></button>
+    <button type="button" data-tab="trips" aria-pressed="false" data-i18n="prop.trips"></button>
+  </div>
+  <main class="edge" id="list"><div class="pad"><div class="skeleton"></div></div></main>
+</div>
+<nav class="tabs" id="tabs" aria-label="Menu"></nav>
+<script type="module" src="/js/app/proposte.js"></script>
+</body>
+</html>
