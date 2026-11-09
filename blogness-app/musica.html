@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blogness · Musica</title>
+<meta name="theme-color" content="#F6F8FB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101216" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-row"><h1 id="title">Musica</h1></div>
+  </header>
+  <main id="main">
+    <section class="mg-hero">
+      <div class="map">
+        <svg width="400" height="150" viewBox="0 0 400 150" aria-hidden="true"><g style="fill:var(--faint)"><ellipse cx="80" cy="62" rx="46" ry="28"/><ellipse cx="118" cy="110" rx="22" ry="32"/><ellipse cx="200" cy="54" rx="28" ry="20"/><ellipse cx="214" cy="102" rx="24" ry="32"/><ellipse cx="292" cy="62" rx="58" ry="28"/><ellipse cx="332" cy="120" rx="22" ry="13"/></g></svg>
+        <span class="pin" style="left:92px;top:52px"></span><span class="pin" style="left:122px;top:104px"></span><span class="pin" style="left:200px;top:46px"></span><span class="pin" style="left:216px;top:94px"></span><span class="pin" style="left:300px;top:56px"></span>
+        <span class="eb" id="eyebrow"></span>
+      </div>
+      <div class="txt">
+        <h2 id="mgTitle"></h2>
+        <p id="mgText"></p>
+        <button type="button" class="btn white block" id="openMap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg><span id="openMapLbl"></span></button>
+      </div>
+    </section>
+
+    <section class="stack">
+      <div class="section-title"><h2 id="byCountry"></h2></div>
+      <div class="hscroll" id="countries"></div>
+    </section>
+
+    <section class="stack">
+      <div class="section-title"><h2 id="magazine"></h2></div>
+      <div id="articles"><div class="skeleton" style="height:160px"></div></div>
+    </section>
+
+    <section class="stack">
+      <div class="section-title"><h2 id="liveTitle"></h2><a href="/proposte.html?tab=events" class="link-btn" id="allEvents" style="text-decoration:none;font-weight:600;color:var(--accent)"></a></div>
+      <div id="live"><div class="skeleton" style="height:120px"></div></div>
+      <a class="btn primary block" href="/contatti.html?tab=chat" id="invite"></a>
+    </section>
+  </main>
+</div>
+<div class="mapview" id="mapview" hidden role="dialog" aria-modal="true" aria-label="Music&amp;GO">
+  <div class="bar"><span>Music&amp;GO</span><button type="button" class="icon-btn" id="closeMap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+</div>
+<nav class="tabs" id="tabs" aria-label="Menu"></nav>
+<script type="module" src="/js/app/musica.js"></script>
+</body>
+</html>

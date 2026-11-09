@@ -65,25 +65,25 @@ function chatView() {
   var reqN = pendingReq().length;
   var sug = suggestions().slice(0, 12);
   return '<label class="searchbar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="sr">' + esc(t("cont.searchChats")) + '</span><input id="chatSearch" type="search" placeholder="' + esc(t("cont.searchChats")) + '" value="' + esc(search) + '"></label>' +
-    (reqN && !q ? '<button type="button" class="dm" data-goto="req"><span class="ring plain"><span class="av" style="background:#EEF2F5;color:#26323D">' + reqN + '</span></span><span class="body"><span class="nm">' + esc(t("cont.req")) + '</span><span class="sub">' + esc(pendingReq().map(function (p) { return p.name; }).join(", ")) + '</span></span><span class="dot"></span></button>' : "") +
+    (reqN && !q ? '<button type="button" class="dm" data-goto="req"><span class="ring plain"><span class="av" style="background:var(--soft);color:var(--ink)">' + reqN + '</span></span><span class="body"><span class="nm">' + esc(t("cont.req")) + '</span><span class="sub">' + esc(pendingReq().map(function (p) { return p.name; }).join(", ")) + '</span></span><span class="dot"></span></button>' : "") +
     '<div class="blockhead"><h2>' + esc(t("cont.chat")) + "</h2></div>" +
-    (showStaff ? '<button type="button" class="dm' + (unread ? " unread" : "") + '" data-thread="staff"><span class="ring' + (unread ? "" : " plain") + '"><span class="av" style="background:#26323D;color:#fff">B</span></span><span class="body"><span class="nm">' + esc(fx("staff")) + '</span><span class="sub">' + esc(lastStaff()) + "</span></span>" + (unread ? '<span class="dot"></span>' : "") + "</button>" : "") +
+    (showStaff ? '<button type="button" class="dm' + (unread ? " unread" : "") + '" data-thread="staff"><span class="ring' + (unread ? "" : " plain") + '"><span class="av" style="background:var(--deep);color:var(--on-deep)">B</span></span><span class="body"><span class="nm">' + esc(fx("staff")) + '</span><span class="sub">' + esc(lastStaff()) + "</span></span>" + (unread ? '<span class="dot"></span>' : "") + "</button>" : "") +
     (followError ? '<div class="pad">' + stateBox(fx("loadError"), true) + "</div>" : !followReady ? '<div class="pad"><div class="skeleton" style="height:120px"></div></div>' :
       (fr.length ? '<div class="blockhead"><h2>' + esc(fx("friends")) + "</h2></div>" + fr.map(function (p) {
         return '<button type="button" class="dm" data-friend="' + esc(p.id) + '"><span class="ring plain">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + '</span><span class="sub">' + esc(fx("friendSub")) + "</span></span></button>";
       }).join("") : (q ? "" : '<p class="muted" style="margin:8px 16px;line-height:1.5">' + esc(fx("noFriends")) + "</p>")) +
       (sug.length && !q ? '<div class="blockhead"><h2>' + esc(t("cont.sug")) + "</h2></div>" + sugCards(sug) : "")) +
-    '<p class="muted" style="text-align:center;margin:8px 16px 0;line-height:1.5">' + esc(t("cont.levels")) + "</p>";
+    "";
 }
 
 function bubble(text, mine, meta) {
   return '<div style="display:flex;justify-content:' + (mine ? "flex-end" : "flex-start") + ';margin:6px 16px"><div style="max-width:78%;padding:10px 14px;border-radius:18px;line-height:1.45;white-space:pre-wrap;' +
-    (mine ? "background:#26323D;color:#fff;border-bottom-right-radius:6px" : "background:#EEF2F5;color:#1D262E;border-bottom-left-radius:6px") + '">' + esc(text) +
+    (mine ? "background:var(--deep);color:var(--on-deep);border-bottom-right-radius:6px" : "background:var(--soft);color:var(--ink);border-bottom-left-radius:6px") + '">' + esc(text) +
     (meta ? '<div style="font-size:11px;opacity:.7;margin-top:4px">' + esc(meta) + "</div>" : "") + "</div></div>";
 }
 
 function threadView() {
-  var head = '<div class="dm" style="cursor:default"><button type="button" class="icon-btn" data-back aria-label="' + esc(fx("back")) + '"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><span class="ring plain"><span class="av" style="background:#26323D;color:#fff">B</span></span><span class="body"><span class="nm">' + esc(fx("staff")) + '</span><span class="sub">' + esc(fx("staffSub")) + "</span></span></div>";
+  var head = '<div class="dm" style="cursor:default"><button type="button" class="icon-btn" data-back aria-label="' + esc(fx("back")) + '"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><span class="ring plain"><span class="av" style="background:var(--deep);color:var(--on-deep)">B</span></span><span class="body"><span class="nm">' + esc(fx("staff")) + '</span><span class="sub">' + esc(fx("staffSub")) + "</span></span></div>";
   var msgs;
   if (staffError) msgs = '<div class="pad">' + stateBox(t("common.loadError"), true) + "</div>";
   else if (!staff) msgs = '<div class="pad"><div class="skeleton" style="height:120px"></div></div>';
@@ -91,8 +91,8 @@ function threadView() {
   else msgs = staff.map(function (m) {
     return bubble(m.body, true, m._pending ? fx("sending") : (m.staffReply ? "" : fx("waiting"))) + (m.staffReply ? bubble(m.staffReply, false, fx("staff")) : "");
   }).join("");
-  var form = '<form id="staffForm" style="position:sticky;bottom:calc(64px + env(safe-area-inset-bottom));display:flex;gap:8px;padding:10px 12px;background:var(--bg,#FAFBFC);border-top:1px solid #E6EAEE">' +
-    '<label class="sr" for="staffMsg">' + esc(fx("placeholder")) + '</label><textarea id="staffMsg" rows="1" maxlength="2000" placeholder="' + esc(fx("placeholder")) + '" style="flex:1;resize:none;border:1px solid #D5DCE2;border-radius:20px;padding:10px 14px;font:inherit;min-height:42px"></textarea>' +
+  var form = '<form id="staffForm" style="position:sticky;bottom:calc(64px + env(safe-area-inset-bottom));display:flex;gap:8px;padding:10px 12px;background:var(--bg,var(--bg));border-top:1px solid var(--line)">' +
+    '<label class="sr" for="staffMsg">' + esc(fx("placeholder")) + '</label><textarea id="staffMsg" rows="1" maxlength="2000" placeholder="' + esc(fx("placeholder")) + '" style="flex:1;resize:none;border:1px solid var(--t2);border-radius:20px;padding:10px 14px;font:inherit;min-height:42px"></textarea>' +
     '<button type="submit" class="btn primary"' + (sending ? " disabled" : "") + ">" + esc(fx("send")) + "</button></form>";
   return head + '<div style="padding:8px 0 16px">' + msgs + "</div>" + form;
 }

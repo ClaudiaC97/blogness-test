@@ -6,7 +6,7 @@ import { loadActions, has, toggle, onActions } from "/js/app/actions.js";
 import { gate, esc, stateBox, toast, BOOKMARK, SEND, TONES } from "/js/app/common.js";
 import { tx } from "/js/app/more.js";
 
-var GRADS = ["linear-gradient(160deg,#F2B36B,#E0565B 45%,#526576)", "linear-gradient(200deg,#0E6B6F,#8FC1BE 60%,#EEF2F5)", "linear-gradient(150deg,#526576,#26323D)", "linear-gradient(170deg,#CFD8DF,#8FA2B2)"];
+var GRADS = ["linear-gradient(160deg,var(--gold),var(--heart) 45%,var(--brand))", "linear-gradient(200deg,var(--accent),#8FC1BE 60%,var(--soft))", "linear-gradient(150deg,var(--brand),var(--deep))", "linear-gradient(170deg,var(--t2),#8FA2B2)"];
 function media(url, i, inner) { return '<div class="ig-media"' + (url ? "" : ' style="background:' + GRADS[i % GRADS.length] + '"') + ">" + (url ? '<img src="' + esc(url) + '" alt="" loading="lazy">' : "") + (inner || "") + "</div>"; }
 
 var list = document.getElementById("list");
@@ -35,7 +35,7 @@ function eventsView(items) {
     var saved = has("event", "event-" + e.slug);
     var where = e.locationType === "ONLINE" ? t("prop.online") : e.locationName;
     var href = "/event.html?slug=" + encodeURIComponent(e.slug);
-    return '<article class="ig"><div class="ig-head"><span class="ring"><span class="av" style="background:#0E6B6F;color:#FFFFFF">B</span></span><span class="who"><span class="name">blogness.events</span><span class="place">' + esc(where || "") + "</span></span></div>" +
+    return '<article class="ig"><div class="ig-head"><span class="ring"><span class="av" style="background:var(--accent);color:var(--on-accent)">B</span></span><span class="who"><span class="name">blogness.events</span><span class="place">' + esc(where || "") + "</span></span></div>" +
       '<a href="' + href + '" style="display:block;position:relative">' + media(e.imageUrl, i, '<span class="date-pill">' + esc(eventDate(e)) + "</span>") + "</a>" +
       '<div class="ig-acts"><a class="icon-btn" href="' + href + '" aria-label="' + esc(t("prop.details")) + '"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg></a>' +
         '<button type="button" class="icon-btn" data-share-event="' + esc(e.slug) + '" aria-label="' + esc(tx("feed.share")) + '">' + SEND + '</button><span class="sp"></span>' +
@@ -48,7 +48,7 @@ function eventsView(items) {
 function tripsView(items) {
   return items.map(function (v, i) {
     var saved = has("save", "trip-" + v._id);
-    return '<article class="ig"><div class="ig-head"><span class="ring"><span class="av" style="background:#526576;color:#FFFFFF">B</span></span><span class="who"><span class="name">blogness.travel</span><span class="place">' + esc(v.length || "") + "</span></span></div>" +
+    return '<article class="ig"><div class="ig-head"><span class="ring"><span class="av" style="background:var(--brand);color:var(--on-accent)">B</span></span><span class="who"><span class="name">blogness.travel</span><span class="place">' + esc(v.length || "") + "</span></span></div>" +
       media(v.image ? imgSrc(v.image, 1080, 1080) : "", i + 1, v.imageLabel ? '<span class="cap">' + esc(v.imageLabel) + "</span>" : "") +
       '<div class="ig-acts"><span class="sp"></span><button type="button" class="icon-btn" data-trip="' + esc(v._id) + '" aria-pressed="' + saved + '" aria-label="' + esc(t(saved ? "common.saved" : "common.save")) + '">' + BOOKMARK(saved) + "</button></div>" +
       '<div class="ig-text"><span><b>' + esc(v.title) + "</b>" + (v.text ? " " + esc(v.text) : "") + "</span></div>" +

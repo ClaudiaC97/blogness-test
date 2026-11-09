@@ -13,7 +13,7 @@ var seg = document.getElementById("seg");
 var tab = new URLSearchParams(location.search).get("tab") || "photos";
 var ready = false, failed = false, member = null;
 var wish = { mine: null, friends: null, error: false };
-var GRADS = ["linear-gradient(160deg,#F2B36B,#E0565B)", "#CFD8DF", "linear-gradient(200deg,#0E6B6F,#8FC1BE)", "#DCE4EA", "linear-gradient(150deg,#526576,#26323D)", "#E3E8EC"];
+var GRADS = ["linear-gradient(160deg,var(--gold),var(--heart))", "var(--t2)", "linear-gradient(200deg,var(--accent),#8FC1BE)", "var(--t4)", "linear-gradient(150deg,var(--brand),var(--deep))", "var(--line)"];
 
 var ICON = {
   photos: '<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/>',
@@ -46,7 +46,7 @@ function renderProfile() {
   var c = counts();
   var fc = followCounts();
   document.getElementById("pf").innerHTML =
-    '<span class="ring"><span class="pic">' + (m && m.photoUrl ? '<img src="' + esc(m.photoUrl) + '" alt="' + esc(t("me.photoAlt")) + '">' : '<svg width="44" height="44" viewBox="0 0 24 24" fill="#8A97A3" role="img" aria-label="' + esc(t("me.photoAlt")) + '"><circle cx="12" cy="10" r="4"/><path d="M4 23c1-4.5 4.2-7 8-7s7 2.5 8 7z"/></svg>') + "</span></span>" +
+    '<span class="ring"><span class="pic">' + (m && m.photoUrl ? '<img src="' + esc(m.photoUrl) + '" alt="' + esc(t("me.photoAlt")) + '">' : '<svg width="44" height="44" viewBox="0 0 24 24" style="fill:var(--faint)" role="img" aria-label="' + esc(t("me.photoAlt")) + '"><circle cx="12" cy="10" r="4"/><path d="M4 23c1-4.5 4.2-7 8-7s7 2.5 8 7z"/></svg>') + "</span></span>" +
     '<div class="stats">' +
       '<button type="button" data-goto="saved" style="border:0;background:none;cursor:pointer;font:inherit"><b>' + c[0] + "</b><span>" + esc(tx("me.statSaved")) + "</span></button>" +
       '<a href="/contatti.html?tab=req" style="color:inherit;text-decoration:none"><b>' + (fc ? fc.followers : "–") + "</b><span>" + esc(fx("followers")) + "</span></a>" +
@@ -63,14 +63,14 @@ function renderProfile() {
 
 function renderHighlights() {
   var hl = [
-    ["wish", tx("me.wish"), "#E0565B", ICON.wish, null],
-    ["day", t("me.day"), "#F2B36B", '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6.3 6.3 4.9 4.9M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>', null],
-    ["events", t("me.events"), "#0E6B6F", ICON.day, null],
-    ["saved", tx("me.trips"), "#526576", '<path d="M2 16l20-8-5 12-4-5-5 3z"/>', null],
-    ["music", tx("me.music"), "#26323D", null, "/musica.html"]
+    ["wish", tx("me.wish"), "var(--heart)", ICON.wish, null],
+    ["day", t("me.day"), "var(--gold)", '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6.3 6.3 4.9 4.9M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>', null],
+    ["events", t("me.events"), "var(--accent)", ICON.day, null],
+    ["saved", tx("me.trips"), "var(--brand)", '<path d="M2 16l20-8-5 12-4-5-5 3z"/>', null],
+    ["music", tx("me.music"), "var(--deep)", null, "/musica.html"]
   ];
   document.getElementById("hl").innerHTML = hl.map(function (h) {
-    var inner = '<span class="ring seen"><span class="disc" style="background:' + h[2] + ';color:#FFFFFF">' + (h[3] ? svg(h[3]) : MUSIC) + '</span></span><span class="lbl">' + esc(h[1]) + "</span>";
+    var inner = '<span class="ring seen"><span class="disc" style="background:' + h[2] + ';color:var(--on-accent)">' + (h[3] ? svg(h[3]) : MUSIC) + '</span></span><span class="lbl">' + esc(h[1]) + "</span>";
     return h[4] ? '<a class="story sm" href="' + h[4] + '">' + inner + "</a>" : '<button type="button" class="story sm" data-goto="' + (h[0] === "events" ? "day" : h[0]) + '">' + inner + "</button>";
   }).join("");
 }
@@ -91,7 +91,7 @@ function wishView() {
   var friends = groups.length ? groups.map(function (g) {
     var h = g.head;
     return '<section class="stack" style="gap:10px"><div class="byline">' + avatar(h.initials, h.friendName) + '<span class="who"><span class="name">' + esc(h.friendName) + '</span><span class="muted">' + esc(h.note) + "</span></span>" +
-      (h.birthday ? '<span class="chip" style="margin-left:auto;color:#E0565B">' + esc(t("wish.birthday")) + "</span>" : "") + '</div><div class="list">' +
+      (h.birthday ? '<span class="chip" style="margin-left:auto;color:var(--heart)">' + esc(t("wish.birthday")) + "</span>" : "") + '</div><div class="list">' +
       g.items.map(function (it, i) {
         var on = has("gift", "wish-" + it._id);
         return '<div class="item" style="cursor:default"><span class="thumb" style="background:' + TONES[(i + 1) % TONES.length] + '"></span><span class="body"><span style="font-size:14.5px;font-weight:600">' + esc(it.itemTitle) + '</span><span class="muted">' + esc(it.priceLabel) + "</span></span>" +

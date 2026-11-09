@@ -3,6 +3,7 @@ import { LANG } from "/js/app/i18n.js";
 
 var D = {
   it: {
+    navHome: "Home", navScopri: "Scopri", navMusica: "Musica", navPersone: "Persone", navTu: "Tu", notifications: "Notifiche",
     follow: "Segui", following: "Segui già", followBack: "Segui anche tu", ignore: "Ignora", ignored: "Ignorato",
     followsYou: "Ti segue", nowFriends: "Vi seguite a vicenda: ora potete scrivervi.",
     reqLead: "Persone che ti seguono e che non segui ancora.", sugLead: "Membri di Blogness che potresti conoscere.",
@@ -13,6 +14,7 @@ var D = {
     followers: "follower", followingStat: "seguiti", loadError: "Non riesco a caricare i membri. Riprova.", error: "Operazione non riuscita. Riprova."
   },
   en: {
+    navHome: "Home", navScopri: "Discover", navMusica: "Music", navPersone: "People", navTu: "You", notifications: "Notifications",
     follow: "Follow", following: "Following", followBack: "Follow back", ignore: "Ignore", ignored: "Ignored",
     followsYou: "Follows you", nowFriends: "You follow each other: you can now message.",
     reqLead: "People who follow you and you don't follow yet.", sugLead: "Blogness members you might know.",
@@ -23,6 +25,7 @@ var D = {
     followers: "followers", followingStat: "following", loadError: "Couldn't load members. Try again.", error: "That didn't work. Try again."
   },
   es: {
+    navHome: "Inicio", navScopri: "Descubrir", navMusica: "Música", navPersone: "Personas", navTu: "Tú", notifications: "Notificaciones",
     follow: "Seguir", following: "Siguiendo", followBack: "Seguir también", ignore: "Ignorar", ignored: "Ignorado",
     followsYou: "Te sigue", nowFriends: "Os seguís mutuamente: ya podéis escribiros.",
     reqLead: "Personas que te siguen y a las que aún no sigues.", sugLead: "Miembros de Blogness que quizá conozcas.",

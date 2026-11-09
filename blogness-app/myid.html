@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n-title="nav.myid">Blogness</title>
+<meta name="theme-color" content="#F6F8FB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101216" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-row">
+      <span id="handle" style="font-size:19px;font-weight:700;color:var(--ink)">MyID</span>
+      <button type="button" class="icon-btn" id="menuBtn" aria-expanded="false" aria-controls="menu"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </header>
+  <div class="sheet-menu" id="menu" hidden>
+    <a class="btn quiet block" href="https://www.blogness.org/my-id" target="_blank" rel="noopener" data-i18n="me.completeCta"></a>
+    <div class="lang-row">
+      <label for="lang" style="font-size:14px" data-i18n="me.lang"></label>
+      <select id="lang">
+        <option value="auto" data-i18n="me.langAuto"></option>
+        <option value="it">Italiano</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+    </div>
+    <button type="button" class="btn block" id="logout" data-i18n="me.logout"></button>
+  </div>
+  <section class="pf" id="pf"><div class="skeleton" style="height:92px;flex:1"></div></section>
+  <section class="pf-bio" id="bio"></section>
+  <div class="pf-btns">
+    <a class="btn" href="https://www.blogness.org/my-id" target="_blank" rel="noopener" data-i18n="me.edit"></a>
+    <button type="button" class="btn" id="shareBtn"></button>
+  </div>
+  <nav class="stories" id="hl" style="border-bottom:0;padding-top:4px"></nav>
+  <div class="pf-tabs" id="seg" role="group"></div>
+  <div id="list"></div>
+  <div style="height:110px"></div>
+</div>
+<nav class="tabs" id="tabs" aria-label="Menu"></nav>
+<script type="module" src="/js/app/myid.js"></script>
+</body>
+</html>
