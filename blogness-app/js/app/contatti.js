@@ -6,7 +6,8 @@ import { t } from "/js/app/i18n.js";
 import { fx } from "/js/app/social-text.js";
 import { queryItems, insertItem } from "/js/org/items.js";
 import { loadActions, has, toggle, onActions } from "/js/app/actions.js";
-import { loadFollow, onFollow, requests, suggestions, friends, isFollowing, setFollow } from "/js/app/follow.js";
+import { loadFollow, onFollow, requests, suggestions, friends, isFollowing, setFollow, person } from "/js/app/follow.js";
+import { listThreads, listMessages, sendMessage } from "/js/app/pchat.js";
 import { gate, esc, avatar, stateBox, toast, initialsOf } from "/js/app/common.js";
 
 var STAFF = "appStaffChat";
@@ -14,11 +15,13 @@ var list = document.getElementById("list");
 var seg = document.getElementById("seg");
 var params = new URLSearchParams(location.search);
 var tab = params.get("tab") || "chat";
-var thread = params.get("c") === "staff" ? "staff" : null;
+var thread = params.get("c") === "staff" ? "staff" : (params.get("c") || "").indexOf("m:") === 0 ? params.get("c") : null;
 var me = null;
 var followReady = false, followError = false;
 var staff = null, staffError = false, sending = false;
 var search = "";
+var pthreads = null, pchatOff = false, pmsgs = null, pmsgsError = false, psending = false, poll = null;
+function other() { return thread && thread.indexOf("m:") === 0 ? thread.slice(2) : null; }
 
 function pendingReq() { return requests().filter(function (p) { return !has("ignore", "fol-" + p.id); }); }
 function av(p) { return avatar(initialsOf(p.name), p.name, "", p.photo); }
@@ -30,7 +33,7 @@ function followBtn(p, labelOff) {
 
 function sugCards(items) {
   return '<div class="cards-x">' + items.map(function (p) {
-    return '<div class="pcard">' + av(p) + "<b>" + esc(p.name) + "</b>" + followBtn(p) + "</div>";
+    return '<div class="pcard">' + av(p) + "<b>" + esc(p.name) + "</b>" + followBtn(p) + (pchatOff ? "" : '<button type="button" class="btn quiet" data-open="' + esc(p.id) + '">' + esc(fx("write")) + "</button>") + "</div>";
   }).join("") + "</div>";
 }
 
@@ -40,7 +43,7 @@ function reqView() {
   return '<div class="blockhead"><h2>' + esc(t("cont.req")) + '</h2></div><p class="lead" style="padding:0 16px">' + esc(fx("reqLead")) + "</p>" +
     items.map(function (p) {
       return '<div class="dm"><span class="ring">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + '</span><span class="sub">' + esc(fx("followsYou")) + '</span></span><span class="acts">' +
-        followBtn(p, fx("followBack")) + '<button type="button" class="btn quiet" data-ignore="' + esc(p.id) + '">' + esc(fx("ignore")) + "</button></span></div>";
+        followBtn(p, fx("followBack")) + (pchatOff ? "" : '<button type="button" class="btn quiet" data-open="' + esc(p.id) + '">' + esc(fx("write")) + "</button>") + '<button type="button" class="btn quiet" data-ignore="' + esc(p.id) + '">' + esc(fx("ignore")) + "</button></span></div>";
     }).join("");
 }
 
@@ -69,11 +72,23 @@ function chatView() {
     '<div class="blockhead"><h2>' + esc(t("cont.chat")) + "</h2></div>" +
     (showStaff ? '<button type="button" class="dm' + (unread ? " unread" : "") + '" data-thread="staff"><span class="ring' + (unread ? "" : " plain") + '"><span class="av" style="background:var(--deep);color:var(--on-deep)">B</span></span><span class="body"><span class="nm">' + esc(fx("staff")) + '<span class="lvbadge">Staff</span></span><span class="sub">' + esc(lastStaff()) + "</span></span>" + (unread ? '<span class="dot"></span>' : "") + "</button>" : "") +
     (followError ? '<div class="pad">' + stateBox(fx("loadError"), true) + "</div>" : !followReady ? '<div class="pad"><div class="skeleton" style="height:120px"></div></div>' :
-      (fr.length ? '<div class="blockhead"><h2>' + esc(fx("friends")) + "</h2></div>" + fr.map(function (p) {
-        return '<button type="button" class="dm" data-friend="' + esc(p.id) + '"><span class="ring plain">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + '</span><span class="sub">' + esc(fx("friendSub")) + "</span></span></button>";
-      }).join("") : (q ? "" : '<p class="muted" style="margin:8px 16px;line-height:1.5">' + esc(fx("noFriends")) + "</p>")) +
+      threadRows(q) +
+      (frFree(fr).length ? '<div class="blockhead"><h2>' + esc(fx("friends")) + "</h2></div>" + frFree(fr).map(function (p) {
+        return '<button type="button" class="dm" data-open="' + esc(p.id) + '"><span class="ring plain">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + '</span><span class="sub">' + esc(pchatOff ? fx("friendSub") : fx("writeSub")) + "</span></span></button>";
+      }).join("") : (q || (pthreads && pthreads.length) ? "" : '<p class="muted" style="margin:8px 16px;line-height:1.5">' + esc(fx("noFriends")) + "</p>")) +
       (sug.length && !q ? '<div class="blockhead"><h2>' + esc(t("cont.sug")) + "</h2></div>" + sugCards(sug) : "")) +
     "";
+}
+
+function frFree(fr) { var has2 = {}; (pthreads || []).forEach(function (x) { has2[x.with] = 1; }); return fr.filter(function (p) { return !has2[p.id]; }); }
+function threadRows(q) {
+  var rows = (pthreads || []).slice().sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); })
+    .map(function (x) { return { x: x, p: person(x.with) }; })
+    .filter(function (r) { return !q || (r.p.name + " " + r.x.last).toLowerCase().indexOf(q) >= 0; });
+  return rows.map(function (r) {
+    var un = r.x.unread > 0;
+    return '<button type="button" class="dm' + (un ? " unread" : "") + '" data-open="' + esc(r.x.with) + '"><span class="ring' + (un ? "" : " plain") + '">' + av(r.p) + '</span><span class="body"><span class="nm">' + esc(r.p.name) + '</span><span class="sub">' + esc((r.x.mine ? "↪ " : "") + r.x.last) + "</span></span>" + (un ? '<span class="dot"></span>' : "") + "</button>";
+  }).join("");
 }
 
 function bubble(text, mine, meta) {
@@ -97,10 +112,34 @@ function threadView() {
   return head + '<div style="padding:8px 0 16px">' + msgs + "</div>" + form;
 }
 
+function pThreadView() {
+  var p = person(other());
+  var head = '<div class="dm" style="cursor:default"><button type="button" class="icon-btn" data-back aria-label="' + esc(fx("back")) + '"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><span class="ring plain">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + "</span></span></div>";
+  var msgs;
+  if (pmsgsError) msgs = '<div class="pad">' + stateBox(pchatOff ? fx("chatOff") : t("common.loadError"), !pchatOff) + "</div>";
+  else if (!pmsgs) msgs = '<div class="pad"><div class="skeleton" style="height:120px"></div></div>';
+  else if (!pmsgs.length) msgs = '<p class="muted" style="margin:24px 16px;text-align:center;line-height:1.5">' + esc(fx("chatEmpty")) + "</p>";
+  else msgs = pmsgs.map(function (m) { return bubble(m.body, m.mine, m._pending ? fx("sending") : ""); }).join("");
+  var form = pchatOff ? "" : '<form id="pForm" style="position:sticky;bottom:calc(64px + env(safe-area-inset-bottom));display:flex;gap:8px;padding:10px 12px;background:var(--bg);border-top:1px solid var(--line)">' +
+    '<label class="sr" for="pMsg">' + esc(fx("placeholder")) + '</label><textarea id="pMsg" rows="1" maxlength="2000" placeholder="' + esc(fx("placeholder")) + '" style="flex:1;resize:none;border:1px solid var(--t2);border-radius:20px;padding:10px 14px;font:inherit;min-height:42px;background:var(--surface);color:var(--ink)"></textarea>' +
+    '<button type="submit" class="btn primary"' + (psending ? " disabled" : "") + ">" + esc(fx("send")) + "</button></form>";
+  return head + '<div style="padding:8px 0 16px">' + msgs + "</div>" + form;
+}
+
 function render() {
   var n = pendingReq().length, badge = document.getElementById("reqN");
   badge.hidden = !n; badge.textContent = n;
   seg.hidden = !!thread;
+  if (other()) {
+    var pd = document.getElementById("pMsg");
+    var pkeep = pd ? pd.value : "";
+    var hadFocus = document.activeElement && document.activeElement.id === "pMsg";
+    list.innerHTML = pThreadView();
+    var pt = document.getElementById("pMsg");
+    if (pt) { pt.value = pkeep; if (hadFocus) pt.focus(); }
+    window.scrollTo(0, document.body.scrollHeight);
+    return;
+  }
   if (thread === "staff") {
     var draft = document.getElementById("staffMsg");
     var keep = draft ? draft.value : "";
@@ -128,6 +167,33 @@ function loadStaff() {
     .then(function (p) { staff = p.items || []; render(); })
     .catch(function () { staffError = true; render(); });
 }
+function loadThreads() {
+  return listThreads().then(function (x) { pthreads = x; pchatOff = false; render(); })
+    .catch(function () { pthreads = []; pchatOff = true; render(); });
+}
+function loadMsgs() {
+  var id = other();
+  if (!id) return;
+  listMessages(id).then(function (x) { if (other() !== id) return; pmsgs = x; pmsgsError = false; pchatOff = false; render(); })
+    .catch(function (e) { if (other() !== id) return; pmsgsError = true; if (!e.status || e.status === 404) pchatOff = true; render(); });
+}
+function openThread(id) {
+  thread = "m:" + id; pmsgs = null; pmsgsError = false; setUrl(); render(); loadMsgs();
+  clearInterval(poll); poll = setInterval(function () { if (other() && !document.hidden) loadMsgs(); }, 8000);
+}
+function pSend(text) {
+  var body = text.trim(), id = other();
+  if (!body || psending || !id) return;
+  psending = true;
+  var temp = { id: "tmp-" + Date.now(), mine: true, body: body, _pending: true };
+  pmsgs = (pmsgs || []).concat([temp]);
+  render();
+  var ta = document.getElementById("pMsg"); if (ta) ta.value = "";
+  sendMessage(id, body)
+    .then(function (m) { pmsgs = (pmsgs || []).map(function (x) { return x === temp ? (m || Object.assign({}, temp, { _pending: false })) : x; }); psending = false; render(); loadThreads(); })
+    .catch(function () { pmsgs = (pmsgs || []).filter(function (x) { return x !== temp; }); psending = false; render(); var t3 = document.getElementById("pMsg"); if (t3) t3.value = body; toast(fx("error")); });
+}
+
 function loadPeople() {
   followError = false;
   loadFollow().then(function () { followReady = true; render(); }).catch(function () { followError = true; render(); });
@@ -142,6 +208,7 @@ function setUrl() {
 function select(x) {
   tab = ["chat", "req", "sug"].indexOf(x) >= 0 ? x : "chat";
   thread = null;
+  clearInterval(poll);
   seg.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tab === tab)); });
   setUrl();
   render();
@@ -163,14 +230,16 @@ function send(text) {
 seg.addEventListener("click", function (e) { var b = e.target.closest("button[data-tab]"); if (b) select(b.dataset.tab); });
 list.addEventListener("click", function (e) {
   if (e.target.closest("[data-retry]")) {
-    if (thread) { staff = null; render(); loadStaff(); } else { followReady = false; render(); loadPeople(); }
+    if (other()) { pmsgs = null; pmsgsError = false; render(); loadMsgs(); }
+    else if (thread) { staff = null; render(); loadStaff(); } else { followReady = false; render(); loadPeople(); }
     return;
   }
   if (e.target.closest("[data-back]")) { select("chat"); return; }
   var g = e.target.closest("[data-goto]");
   if (g) { select(g.dataset.goto); return; }
   if (e.target.closest("[data-thread]")) { thread = "staff"; setUrl(); render(); if (!staff) loadStaff(); return; }
-  if (e.target.closest("[data-friend]")) { toast(fx("privateSoon")); return; }
+  var op = e.target.closest("[data-open]");
+  if (op) { if (pchatOff) toast(fx("chatOff")); else openThread(op.dataset.open); return; }
   var f = e.target.closest("[data-follow]");
   if (f) {
     var id = f.dataset.follow, on = !isFollowing(id);
@@ -182,11 +251,13 @@ list.addEventListener("click", function (e) {
   if (ig) toggle("ignore", "fol-" + ig.dataset.ignore, { title: fx("ignored") }).catch(function () { toast(fx("error")); });
 });
 list.addEventListener("submit", function (e) {
+  if (e.target.id === "pForm") { e.preventDefault(); pSend(document.getElementById("pMsg").value); return; }
   if (e.target.id !== "staffForm") return;
   e.preventDefault();
   send(document.getElementById("staffMsg").value);
 });
 list.addEventListener("keydown", function (e) {
+  if (e.target.id === "pMsg" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); pSend(e.target.value); return; }
   if (e.target.id === "staffMsg" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(e.target.value); }
 });
 list.addEventListener("input", function (e) { if (e.target.id === "chatSearch") { search = e.target.value; render(); } });
@@ -199,5 +270,7 @@ gate("contatti", function (s) {
   render();
   loadPeople();
   loadStaff();
+  loadThreads();
+  if (other()) openThread(other());
   loadActions().catch(function () {});
 });

@@ -4,6 +4,7 @@ import { LANG } from "/js/app/i18n.js";
 var D = {
   it: {
     hello: "Ciao", helloSub: "ecco cosa c’è per te oggi.", planTitle: "Il tuo piano di oggi", planEmpty: "Non hai ancora niente in programma. Scegli un evento o crea la tua giornata.", planCta: "Scopri cosa fare", planNext: "Prossimo in agenda", invite: "Invita un amico", details: "Dettagli", friendsTitle: "I tuoi amici", seeAll: "Vedi tutti", findPeople: "Trova persone", picked: "Scelti per te", fromCommunity: "Dalla community", minRead: "min", level: "Livello", lv1: "Nuovo arrivo", lv2: "Curioso", lv3: "Esploratore", lv4: "Anima sociale", lv5: "Ambasciatore", relLv1: "Ti segue", relLv2: "Vi seguite", lvHint: "Il livello è simbolico: cresce con le persone che segui e che ti seguono.",
+    write: "Scrivi", writeSub: "Scrivi un messaggio", chatOff: "La chat privata si attiva appena blogness.org viene pubblicato con il nuovo codice.", chatEmpty: "Scrivi il primo messaggio.",
     navHome: "Home", navScopri: "Scopri", navMusica: "Musica", navPersone: "Persone", navTu: "Tu", notifications: "Notifiche",
     follow: "Segui", following: "Segui già", followBack: "Segui anche tu", ignore: "Ignora", ignored: "Ignorato",
     followsYou: "Ti segue", nowFriends: "Vi seguite a vicenda: ora potete scrivervi.",
@@ -16,6 +17,7 @@ var D = {
   },
   en: {
     hello: "Hi", helloSub: "here’s what’s on for you today.", planTitle: "Your plan for today", planEmpty: "Nothing planned yet. Pick an event or build your day.", planCta: "Find something to do", planNext: "Next on your list", invite: "Invite a friend", details: "Details", friendsTitle: "Your friends", seeAll: "See all", findPeople: "Find people", picked: "Picked for you", fromCommunity: "From the community", minRead: "min", level: "Level", lv1: "Newcomer", lv2: "Curious", lv3: "Explorer", lv4: "Social soul", lv5: "Ambassador", relLv1: "Follows you", relLv2: "Mutual", lvHint: "Your level is symbolic: it grows with the people you follow and who follow you.",
+    write: "Message", writeSub: "Send a message", chatOff: "Private chat goes live as soon as blogness.org is published with the new code.", chatEmpty: "Say hello with the first message.",
     navHome: "Home", navScopri: "Discover", navMusica: "Music", navPersone: "People", navTu: "You", notifications: "Notifications",
     follow: "Follow", following: "Following", followBack: "Follow back", ignore: "Ignore", ignored: "Ignored",
     followsYou: "Follows you", nowFriends: "You follow each other: you can now message.",
@@ -28,6 +30,7 @@ var D = {
   },
   es: {
     hello: "Hola", helloSub: "esto es lo que hay para ti hoy.", planTitle: "Tu plan de hoy", planEmpty: "Aún no tienes nada previsto. Elige un evento o crea tu día.", planCta: "Descubre qué hacer", planNext: "Lo próximo en tu agenda", invite: "Invita a un amigo", details: "Detalles", friendsTitle: "Tus amigos", seeAll: "Ver todos", findPeople: "Buscar personas", picked: "Elegidos para ti", fromCommunity: "De la comunidad", minRead: "min", level: "Nivel", lv1: "Recién llegado", lv2: "Curioso", lv3: "Explorador", lv4: "Alma social", lv5: "Embajador", relLv1: "Te sigue", relLv2: "Os seguís", lvHint: "El nivel es simbólico: crece con las personas que sigues y que te siguen.",
+    write: "Escribir", writeSub: "Escribe un mensaje", chatOff: "El chat privado se activa en cuanto blogness.org se publique con el nuevo código.", chatEmpty: "Escribe el primer mensaje.",
     navHome: "Inicio", navScopri: "Descubrir", navMusica: "Música", navPersone: "Personas", navTu: "Tú", notifications: "Notificaciones",
     follow: "Seguir", following: "Siguiendo", followBack: "Seguir también", ignore: "Ignorar", ignored: "Ignorado",
     followsYou: "Te sigue", nowFriends: "Os seguís mutuamente: ya podéis escribiros.",
