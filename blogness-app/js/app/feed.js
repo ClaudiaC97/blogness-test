@@ -5,7 +5,7 @@ import { imgSrc } from "/js/wix/media.js";
 import { fetchPostsInLanguage } from "/js/app/org-posts.js";
 import { loadActions, has, toggle, onActions, list as listActions } from "/js/app/actions.js";
 import { fx } from "/js/app/social-text.js";
-import { loadFollow, onFollow, friends, myLevel } from "/js/app/follow.js";
+import { loadFollow, onFollow, friends } from "/js/app/follow.js";
 import { gate, esc, toneFor, initialsOf, stateBox, toast, HEART, BOOKMARK, COMMENT, SEND, MUSIC, CAL, TONES } from "/js/app/common.js";
 
 var list = document.getElementById("list");
@@ -31,17 +31,14 @@ function normArticles(posts) {
 
 function handle(name) { return String(name || "").toLowerCase().replace(/\s+/g, ".").replace(/[^a-z0-9._àèéìòù]/g, ""); }
 
-function lvName(n) { return fx("lv" + n); }
-
 function renderHome() {
   var me = member || {};
   var first = me.firstName || me.nickname || me.displayName || "";
   var today = new Date().toLocaleDateString(LANG === "en" ? "en-GB" : LANG, { weekday: "long", day: "numeric", month: "long" });
   var plan = listActions(["event", "day"]);
   var next = plan[0];
-  var lv = myLevel();
   var html = '<div class="hello"><p class="date">' + esc(today) + '</p><h1>' + esc(fx("hello") + (first ? " " + first : "") + ",") + "<br>" + esc(fx("helloSub")) + "</h1>" +
-    (lv ? '<a class="lvl" href="/myid.html">' + esc(fx("level") + " " + lv + " · " + lvName(lv)) + "</a>" : "") + "</div>";
+    "</div>";
   html += '<section class="plan" aria-label="' + esc(fx("planTitle")) + '"><p class="kick">' + CAL + "<span>" + esc(next ? fx("planNext") : fx("planTitle")) + "</span></p>" +
     (next ? "<h2>" + esc(next.title || "") + "</h2>" + (next.meta ? '<p class="sub">' + esc(next.meta) + "</p>" : "") +
       '<div class="row"><a class="btn primary" href="/contatti.html?tab=chat">' + esc(fx("invite")) + '</a><a class="btn" href="' + esc(next.link || "/myid.html?tab=day") + '">' + esc(fx("details")) + "</a></div>"

@@ -4,7 +4,7 @@ import { logout } from "/js/org/member-store.js";
 import { queryItems } from "/js/wix/items.js";
 import { imgSrc } from "/js/wix/media.js";
 import { loadActions, list as listActions, has, toggle, onActions } from "/js/app/actions.js";
-import { loadFollow, onFollow, counts as followCounts, myLevel } from "/js/app/follow.js";
+import { loadFollow, onFollow, counts as followCounts } from "/js/app/follow.js";
 import { fx } from "/js/app/social-text.js";
 import { gate, esc, avatar, stateBox, toast, initialsOf, MUSIC, CAL, TONES } from "/js/app/common.js";
 
@@ -56,7 +56,6 @@ function renderProfile() {
   var since = m && m.memberSince ? fmtDate(m.memberSince, { month: "long", year: "numeric" }) : "";
   document.getElementById("bio").innerHTML =
     '<span class="hello">' + esc(name ? t("me.welcomeName", { name: name }) : t("me.welcome")) + "</span>" +
-    (myLevel() ? '<span><span class="lvbadge" style="margin:4px 0 0" title="' + esc(fx("lvHint")) + '">' + esc(fx("level") + " " + myLevel() + " · " + fx("lv" + myLevel())) + "</span></span>" : "") +
     (m && m.loginEmail ? "<span>" + esc(m.loginEmail) + "</span>" : "") +
     (since ? "<span>" + esc(t("me.since", { date: since })) + "</span>" : "") +
     (!m ? "<span>" + esc(t("me.unavailable")) + "</span>" : "");
