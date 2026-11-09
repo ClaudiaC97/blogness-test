@@ -60,3 +60,19 @@ export function setFollow(id, on) {
   return wixRequest("/members/v3/followers/" + encodeURIComponent(id), { method: on ? "POST" : "DELETE", body: on ? {} : undefined })
     .catch(function (e) { if (was) state.following.add(id); else state.following.delete(id); emit(); throw e; });
 }
+
+// Symbolic levels (no unlocks): yours grows with your connections; with another member, it reflects how you are linked.
+var STEPS = [0, 3, 10, 25, 50];
+export function myLevel() {
+  if (!state) return null;
+  var mutual = Array.from(state.following).filter(function (id) { return state.followers.has(id); }).length;
+  var score = state.followers.size + state.following.size + mutual;
+  var n = 1;
+  STEPS.forEach(function (min, i) { if (score >= min) n = i + 1; });
+  return n;
+}
+export function relationLevel(id) {
+  if (!state) return 0;
+  var a = state.following.has(id), b = state.followers.has(id);
+  return a && b ? 2 : (a || b ? 1 : 0);
+}

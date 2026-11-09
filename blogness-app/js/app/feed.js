@@ -3,12 +3,13 @@ import { tx } from "/js/app/more.js";
 import { queryItems } from "/js/wix/items.js";
 import { imgSrc } from "/js/wix/media.js";
 import { fetchPostsInLanguage } from "/js/app/org-posts.js";
-import { loadActions, has, toggle, onActions } from "/js/app/actions.js";
+import { loadActions, has, toggle, onActions, list as listActions } from "/js/app/actions.js";
+import { fx } from "/js/app/social-text.js";
+import { loadFollow, onFollow, friends, myLevel } from "/js/app/follow.js";
 import { gate, esc, toneFor, initialsOf, stateBox, toast, HEART, BOOKMARK, COMMENT, SEND, MUSIC, CAL, TONES } from "/js/app/common.js";
 
 var list = document.getElementById("list");
-var filters = document.getElementById("filters");
-var storiesEl = document.getElementById("stories");
+var homeEl = document.getElementById("home");
 var current = "";
 var community = null, articles = null;
 var errors = { community: null, articles: null };
@@ -30,21 +31,35 @@ function normArticles(posts) {
 
 function handle(name) { return String(name || "").toLowerCase().replace(/\s+/g, ".").replace(/[^a-z0-9._àèéìòù]/g, ""); }
 
-function renderStories() {
+function lvName(n) { return fx("lv" + n); }
+
+function renderHome() {
   var me = member || {};
-  var meDisc = me.photoUrl ? '<img src="' + esc(me.photoUrl) + '" alt="">' : esc(initialsOf(me.firstName || me.displayName || ""));
-  var html =
-    '<a class="story" href="/myid.html"><span class="ring none"><span class="disc">' + meDisc + '<span class="plus" aria-hidden="true">+</span></span></span><span class="lbl">' + esc(tx("story.me")) + "</span></a>" +
-    '<a class="story" href="/musica.html"><span class="ring"><span class="disc dark">' + MUSIC + '</span></span><span class="lbl">' + esc(tx("story.music")) + "</span></a>" +
-    '<a class="story" href="/proposte.html?tab=events"><span class="ring"><span class="disc teal">' + CAL + '</span></span><span class="lbl">' + esc(tx("story.events")) + "</span></a>";
-  var seen = {};
-  (community || []).forEach(function (p) {
-    if (!p.author || seen[p.author]) return;
-    seen[p.author] = 1;
-    var watched = has("read", "story-" + p.id);
-    html += '<button type="button" class="story" data-story="' + esc(p.id) + '"><span class="ring' + (watched ? " seen" : "") + '"><span class="disc" style="background:' + toneFor(p.author) + '">' + esc(p.initials || initialsOf(p.author)) + '</span></span><span class="lbl">' + esc(String(p.author).split(" ")[0]) + "</span></button>";
-  });
-  storiesEl.innerHTML = html;
+  var first = me.firstName || me.nickname || me.displayName || "";
+  var today = new Date().toLocaleDateString(LANG === "en" ? "en-GB" : LANG, { weekday: "long", day: "numeric", month: "long" });
+  var plan = listActions(["event", "day"]);
+  var next = plan[0];
+  var lv = myLevel();
+  var html = '<div class="hello"><p class="date">' + esc(today) + '</p><h1>' + esc(fx("hello") + (first ? " " + first : "") + ",") + "<br>" + esc(fx("helloSub")) + "</h1>" +
+    (lv ? '<a class="lvl" href="/myid.html">' + esc(fx("level") + " " + lv + " · " + lvName(lv)) + "</a>" : "") + "</div>";
+  html += '<section class="plan" aria-label="' + esc(fx("planTitle")) + '"><p class="kick">' + CAL + "<span>" + esc(next ? fx("planNext") : fx("planTitle")) + "</span></p>" +
+    (next ? "<h2>" + esc(next.title || "") + "</h2>" + (next.meta ? '<p class="sub">' + esc(next.meta) + "</p>" : "") +
+      '<div class="row"><a class="btn primary" href="/contatti.html?tab=chat">' + esc(fx("invite")) + '</a><a class="btn" href="' + esc(next.link || "/myid.html?tab=day") + '">' + esc(fx("details")) + "</a></div>"
+    : '<p class="sub">' + esc(fx("planEmpty")) + '</p><div class="row"><a class="btn primary" href="/proposte.html">' + esc(fx("planCta")) + "</a></div>") + "</section>";
+  var fr = friends();
+  html += '<div class="sechead"><h2>' + esc(fx("friendsTitle")) + '</h2><a href="/contatti.html">' + esc(fr.length ? fx("seeAll") : fx("findPeople")) + "</a></div>";
+  html += '<div class="friends-row"><a class="fr me" href="/myid.html"><span class="ph">' + (me.photoUrl ? '<img src="' + esc(me.photoUrl) + '" alt="">' : esc(initialsOf(first || "Tu"))) + '</span><span class="nm">' + esc(fx("navTu")) + "</span></a>" +
+    fr.slice(0, 12).map(function (p) { return '<a class="fr" href="/contatti.html"><span class="ph ring"' + (p.photo ? "" : ' style="background:' + toneFor(p.name) + '"') + ">" + (p.photo ? '<img src="' + esc(p.photo) + '" alt="">' : esc(initialsOf(p.name))) + '</span><span class="nm">' + esc(String(p.name).split(" ")[0]) + "</span></a>"; }).join("") +
+    (fr.length ? "" : '<a class="fr add" href="/contatti.html?tab=sug"><span class="ph">+</span><span class="nm">' + esc(fx("findPeople")) + "</span></a>") + "</div>";
+  homeEl.innerHTML = html;
+}
+
+function acard(it) {
+  var saved = has("save", it.id);
+  var href = "/post.html?slug=" + encodeURIComponent(it.slug);
+  return '<article class="acard"><a class="pic" href="' + href + '">' + (it.image ? '<img src="' + esc(it.image) + '" alt="" loading="lazy">' : "") + '<span class="chip">' + esc(t("feed.badge.articles")) + "</span></a>" +
+    '<div class="txt"><a class="ttl" href="' + href + '">' + esc(it.title) + '</a><span class="meta">' + esc([it.minutes ? it.minutes + " " + fx("minRead") : "", fmtDate(it.dateISO, { day: "numeric", month: "long" })].filter(Boolean).join(" · ")) + "</span></div>" +
+    '<button type="button" class="icon-btn save" data-act="save" data-id="' + esc(it.id) + '" aria-pressed="' + saved + '" aria-label="' + esc(t(saved ? "common.saved" : "common.save")) + '">' + BOOKMARK(saved) + "</button></article>";
 }
 
 function card(it, i) {
@@ -78,19 +93,15 @@ function card(it, i) {
 }
 
 function render() {
-  renderStories();
-  var wantA = current === "" || current === "articles";
-  var wantC = current !== "articles";
-  if ((wantA && articles === null && !errors.articles) || (wantC && community === null && !errors.community)) {
-    list.innerHTML = '<div class="pad"><div class="skeleton" style="aspect-ratio:1/1;height:auto"></div></div>'; return;
-  }
-  var items = [];
-  if (wantA && articles) items = items.concat(articles);
-  if (wantC && community) items = items.concat(community.filter(function (p) { return !current || p.type === current; }));
-  items.sort(function (a, b) { return String(b.dateISO).localeCompare(String(a.dateISO)); });
-  var errs = (wantA && errors.articles) || (wantC && errors.community);
-  if (!items.length) { list.innerHTML = '<div class="pad">' + (errs ? stateBox(t("common.loadError"), true) : stateBox(t("feed.empty"))) + "</div>"; return; }
-  list.innerHTML = items.map(card).join("");
+  renderHome();
+  if (articles === null && community === null) { list.innerHTML = '<div class="pad"><div class="skeleton" style="height:260px"></div></div>'; return; }
+  var arts = (articles || []).slice().sort(function (a, b) { return String(b.dateISO).localeCompare(String(a.dateISO)); });
+  var com = (community || []).slice().sort(function (a, b) { return String(b.dateISO).localeCompare(String(a.dateISO)); });
+  var html = "";
+  if (arts.length) html += '<div class="sechead"><h2>' + esc(fx("picked")) + '</h2><a href="/proposte.html">' + esc(fx("navScopri")) + '</a></div><div class="acards">' + arts.slice(0, 6).map(acard).join("") + "</div>";
+  if (com.length) html += '<div class="sechead"><h2>' + esc(fx("fromCommunity")) + "</h2></div>" + com.map(card).join("");
+  if (!html) html = '<div class="pad">' + ((errors.articles || errors.community) ? stateBox(t("common.loadError"), true) : stateBox(t("feed.empty"))) + "</div>";
+  list.innerHTML = html;
 }
 
 function load() {
@@ -148,25 +159,13 @@ list.addEventListener("keydown", function (e) {
   var m = e.target.closest && e.target.closest("[data-media]");
   if (m && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); var it = findItem(m.dataset.media); if (it && it.kind === "article") location.assign("/post.html?slug=" + encodeURIComponent(it.slug)); else likeOnce(m.dataset.media, m); }
 });
-storiesEl.addEventListener("click", function (e) {
-  var s = e.target.closest("[data-story]");
-  if (!s) return;
-  var art = list.querySelector('[data-media="' + s.dataset.story + '"]');
-  if (art) art.closest(".ig").scrollIntoView({ behavior: "smooth", block: "start" });
-  var it = findItem(s.dataset.story);
-  if (it && !has("read", "story-" + it.id)) toggle("read", "story-" + it.id, { title: it.author }).catch(function () {});
-});
-filters.addEventListener("click", function (e) {
-  var b = e.target.closest("button[data-type]");
-  if (!b) return;
-  current = b.dataset.type;
-  filters.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
-  render();
-});
 onActions(render);
+onFollow(render);
 
 gate("feed", function (s) {
   member = s.member;
+  render();
   load();
   loadActions().catch(function () {});
+  loadFollow().catch(function () {});
 });

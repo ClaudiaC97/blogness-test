@@ -6,7 +6,7 @@ import { t } from "/js/app/i18n.js";
 import { fx } from "/js/app/social-text.js";
 import { queryItems, insertItem } from "/js/org/items.js";
 import { loadActions, has, toggle, onActions } from "/js/app/actions.js";
-import { loadFollow, onFollow, requests, suggestions, friends, isFollowing, setFollow } from "/js/app/follow.js";
+import { loadFollow, onFollow, requests, suggestions, friends, isFollowing, setFollow, relationLevel } from "/js/app/follow.js";
 import { gate, esc, avatar, stateBox, toast, initialsOf } from "/js/app/common.js";
 
 var STAFF = "appStaffChat";
@@ -22,6 +22,8 @@ var search = "";
 
 function pendingReq() { return requests().filter(function (p) { return !has("ignore", "fol-" + p.id); }); }
 function av(p) { return avatar(initialsOf(p.name), p.name, "", p.photo); }
+
+function lvb(id) { var n = relationLevel(id); return n ? '<span class="lvbadge">' + esc(fx("level") + " " + n) + "</span>" : ""; }
 
 function followBtn(p, labelOff) {
   var on = isFollowing(p.id);
@@ -39,7 +41,7 @@ function reqView() {
   if (!items.length) return '<div class="pad">' + stateBox(t("cont.noReq")) + "</div>";
   return '<div class="blockhead"><h2>' + esc(t("cont.req")) + '</h2></div><p class="lead" style="padding:0 16px">' + esc(fx("reqLead")) + "</p>" +
     items.map(function (p) {
-      return '<div class="dm"><span class="ring">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + '</span><span class="sub">' + esc(fx("followsYou")) + '</span></span><span class="acts">' +
+      return '<div class="dm"><span class="ring">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + lvb(p.id) + '</span><span class="sub">' + esc(fx("followsYou")) + '</span></span><span class="acts">' +
         followBtn(p, fx("followBack")) + '<button type="button" class="btn quiet" data-ignore="' + esc(p.id) + '">' + esc(fx("ignore")) + "</button></span></div>";
     }).join("");
 }
@@ -67,10 +69,10 @@ function chatView() {
   return '<label class="searchbar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="sr">' + esc(t("cont.searchChats")) + '</span><input id="chatSearch" type="search" placeholder="' + esc(t("cont.searchChats")) + '" value="' + esc(search) + '"></label>' +
     (reqN && !q ? '<button type="button" class="dm" data-goto="req"><span class="ring plain"><span class="av" style="background:var(--soft);color:var(--ink)">' + reqN + '</span></span><span class="body"><span class="nm">' + esc(t("cont.req")) + '</span><span class="sub">' + esc(pendingReq().map(function (p) { return p.name; }).join(", ")) + '</span></span><span class="dot"></span></button>' : "") +
     '<div class="blockhead"><h2>' + esc(t("cont.chat")) + "</h2></div>" +
-    (showStaff ? '<button type="button" class="dm' + (unread ? " unread" : "") + '" data-thread="staff"><span class="ring' + (unread ? "" : " plain") + '"><span class="av" style="background:var(--deep);color:var(--on-deep)">B</span></span><span class="body"><span class="nm">' + esc(fx("staff")) + '</span><span class="sub">' + esc(lastStaff()) + "</span></span>" + (unread ? '<span class="dot"></span>' : "") + "</button>" : "") +
+    (showStaff ? '<button type="button" class="dm' + (unread ? " unread" : "") + '" data-thread="staff"><span class="ring' + (unread ? "" : " plain") + '"><span class="av" style="background:var(--deep);color:var(--on-deep)">B</span></span><span class="body"><span class="nm">' + esc(fx("staff")) + '<span class="lvbadge">Staff</span></span><span class="sub">' + esc(lastStaff()) + "</span></span>" + (unread ? '<span class="dot"></span>' : "") + "</button>" : "") +
     (followError ? '<div class="pad">' + stateBox(fx("loadError"), true) + "</div>" : !followReady ? '<div class="pad"><div class="skeleton" style="height:120px"></div></div>' :
       (fr.length ? '<div class="blockhead"><h2>' + esc(fx("friends")) + "</h2></div>" + fr.map(function (p) {
-        return '<button type="button" class="dm" data-friend="' + esc(p.id) + '"><span class="ring plain">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + '</span><span class="sub">' + esc(fx("friendSub")) + "</span></span></button>";
+        return '<button type="button" class="dm" data-friend="' + esc(p.id) + '"><span class="ring plain">' + av(p) + '</span><span class="body"><span class="nm">' + esc(p.name) + lvb(p.id) + '</span><span class="sub">' + esc(fx("friendSub")) + "</span></span></button>";
       }).join("") : (q ? "" : '<p class="muted" style="margin:8px 16px;line-height:1.5">' + esc(fx("noFriends")) + "</p>")) +
       (sug.length && !q ? '<div class="blockhead"><h2>' + esc(t("cont.sug")) + "</h2></div>" + sugCards(sug) : "")) +
     "";
