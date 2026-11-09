@@ -385,3 +385,37 @@ main{padding:16px 16px 110px;gap:22px}
 .acard .meta{font-size:13px;color:var(--muted)}
 .acard .save{border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .lvbadge{display:inline-flex;align-items:center;margin-left:6px;padding:2px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:10.5px;font-weight:700;vertical-align:middle}
+
+/* MyID agenda (29) */
+.ag-head{gap:12px}
+.ag-me{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.ag-ph{width:48px;height:48px;border-radius:50%;background:var(--t1);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:22px;overflow:hidden;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--accent)}
+.ag-ph img{width:100%;height:100%;object-fit:cover}
+.ag-kick{display:block;font-size:13px;color:var(--muted)}
+.ag-title{display:block;font-family:var(--display);font-weight:400;font-size:30px;line-height:1}
+.ag-plus{width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:inline-flex;align-items:center;justify-content:center}
+.ag-week{display:flex;gap:6px;padding:18px 20px 0}
+.ag-day{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 9px;border-radius:16px;border:1px solid var(--line);background:var(--surface);font-size:12px;color:var(--muted);text-transform:capitalize}
+.ag-day b{font-size:17px;color:var(--ink)}
+.ag-day.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.ag-day.on b{color:var(--on-accent)}
+.ag-list{display:flex;flex-direction:column;gap:10px;padding:0 20px}
+.ag-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--ink);min-height:44px}
+.ag-item .bar{width:5px;align-self:stretch;border-radius:3px;background:var(--accent)}
+.ag-item .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ag-item .tx b{font-size:15px;font-weight:600}
+.ag-item .tx span{font-size:12.5px;color:var(--muted)}
+.ag-item svg{color:var(--muted);flex:none}
+.ag-empty{margin:0 20px;padding:18px;border-radius:20px;background:var(--accent-soft)}
+.ag-empty p{margin:0 0 12px;font-size:14px;line-height:1.5;color:var(--ink)}
+.ag-empty .btn{border-radius:999px;min-height:44px;display:inline-flex;align-items:center;text-decoration:none}
+.ag-voci{display:flex;flex-direction:column;gap:10px;padding:0 20px}
+.ag-voce{display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--ink);min-height:44px}
+.ag-voce .ic{width:42px;height:42px;border-radius:13px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.ag-voce .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ag-voce .tx b{font-size:15.5px;font-weight:600}
+.ag-voce .tx span{font-size:12.5px;color:var(--muted)}
+.ag-voce > svg{color:var(--muted);flex:none}
+.ag-back{display:inline-flex;align-items:center;gap:4px;margin:6px 12px 0;min-height:44px;padding:0 8px;border:0;background:none;color:var(--accent);font-size:15px;font-weight:600;cursor:pointer}
+.ag-subtitle{margin:0 20px 10px;font-family:var(--display);font-weight:400;font-size:34px;color:var(--ink)}
+#profileBox .sheet-menu{position:static;display:flex;margin:6px 16px 0;box-shadow:none;border:1px solid var(--line)}

@@ -9,8 +9,8 @@ import { fx } from "/js/app/social-text.js";
 import { gate, esc, avatar, stateBox, toast, initialsOf, MUSIC, CAL, TONES } from "/js/app/common.js";
 
 var listEl = document.getElementById("list");
-var seg = document.getElementById("seg");
-var tab = new URLSearchParams(location.search).get("tab") || "photos";
+var tab = new URLSearchParams(location.search).get("tab") || "";
+var agendaEl = document.getElementById("agenda"), subEl = document.getElementById("sub");
 var ready = false, failed = false, member = null;
 var wish = { mine: null, friends: null, error: false };
 var GRADS = ["linear-gradient(160deg,var(--gold),var(--heart))", "var(--t2)", "linear-gradient(200deg,var(--accent),#8FC1BE)", "var(--t4)", "linear-gradient(150deg,var(--brand),var(--deep))", "var(--line)"];
@@ -24,13 +24,6 @@ var ICON = {
 var LABEL = { photos: "me.tabPhotos", saved: "me.tabSaved", wish: "me.tabWish", day: "me.tabDay" };
 function svg(p, w) { return '<svg width="' + (w || 24) + '" height="' + (w || 24) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + "</svg>"; }
 
-function renderSeg() {
-  seg.setAttribute("aria-label", tx("me.highlights"));
-  seg.innerHTML = ["photos", "saved", "wish", "day"].map(function (id) {
-    return '<button type="button" data-tab="' + id + '" aria-pressed="' + (tab === id) + '" aria-label="' + esc(tx(LABEL[id])) + '">' + svg(ICON[id]) + "</button>";
-  }).join("");
-}
-
 function counts() {
   if (!ready) return ["–", "–", "–"];
   var saved = listActions(["save", "like"]).filter(function (r) { return r.title; }).length;
@@ -42,7 +35,6 @@ function counts() {
 function renderProfile() {
   var m = member;
   var name = m ? (m.firstName || m.displayName || "") : "";
-  document.getElementById("handle").textContent = m && (m.nickname || m.displayName) ? (m.nickname || m.displayName) : "MyID";
   var c = counts();
   var fc = followCounts();
   document.getElementById("pf").innerHTML =
@@ -59,20 +51,6 @@ function renderProfile() {
     (m && m.loginEmail ? "<span>" + esc(m.loginEmail) + "</span>" : "") +
     (since ? "<span>" + esc(t("me.since", { date: since })) + "</span>" : "") +
     (!m ? "<span>" + esc(t("me.unavailable")) + "</span>" : "");
-}
-
-function renderHighlights() {
-  var hl = [
-    ["wish", tx("me.wish"), "var(--heart)", ICON.wish, null],
-    ["day", t("me.day"), "var(--gold)", '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6.3 6.3 4.9 4.9M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>', null],
-    ["events", t("me.events"), "var(--accent)", ICON.day, null],
-    ["saved", tx("me.trips"), "var(--brand)", '<path d="M2 16l20-8-5 12-4-5-5 3z"/>', null],
-    ["music", tx("me.music"), "var(--deep)", null, "/musica.html"]
-  ];
-  document.getElementById("hl").innerHTML = hl.map(function (h) {
-    var inner = '<span class="ring seen"><span class="disc" style="background:' + h[2] + ';color:var(--on-accent)">' + (h[3] ? svg(h[3]) : MUSIC) + '</span></span><span class="lbl">' + esc(h[1]) + "</span>";
-    return h[4] ? '<a class="story sm" href="' + h[4] + '">' + inner + "</a>" : '<button type="button" class="story sm" data-goto="' + (h[0] === "events" ? "day" : h[0]) + '">' + inner + "</button>";
-  }).join("");
 }
 
 function cell(r, i, extra) {
@@ -107,11 +85,64 @@ function rowsGrid(rows, emptyKey) {
   return '<div class="pgrid">' + rows.map(function (r, i) { return cell({ title: r.title, link: r.link }, i); }).join("") + "</div>";
 }
 
+var V = {
+  pub: ["vPub", "vPubS", '<path d="M12 5v14M5 12h14"/>', "https://www.blogness.org/community-hub"],
+  share: ["vShare", "vShareS", '<path d="M12 3v12"/><path d="m7.5 7.5 4.5-4.5 4.5 4.5"/><path d="M5 13v6.5h14V13"/>', "#share"],
+  day: ["vDay", "vDayS", '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', "/proposte.html?tab=day"],
+  trip: ["vTrip", "vTripS", '<path d="M2.5 13.5 21 6l-4.5 14-4-6-6-1.5z"/><path d="m12.5 14 4-4"/>', "/proposte.html?tab=trips"],
+  chat: ["vChat", "vChatS", '<path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5z"/>', "/contatti.html?tab=chat"],
+  events: ["vEvents", "vEventsS", '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>', "?tab=day"],
+  wish: ["vWish", "vWishS", '<rect x="3.5" y="8" width="17" height="4.5" rx="1"/><path d="M5 12.5V20h14v-7.5M12 8v12"/><path d="M12 8c-1.5-3.5-5.5-3.5-5.5-1S10 8 12 8c2 0 5.5 0 5.5-1S13.5 4.5 12 8z"/>', "?tab=wish"],
+  saved: ["vSaved", "vSavedS", '<path d="M6 3h12v18l-6-4-6 4z"/>', "?tab=saved"],
+  music: ["vMusic", "vMusicS", '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>', "/musica.html"],
+  profile: ["vProfile", "vProfileS", '<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>', "?tab=profile"]
+};
+var ORDER = ["pub", "share", "day", "trip", "chat", "events", "wish", "saved", "music", "profile"];
+var SUBTITLE = { day: "vEvents", wish: "vWish", saved: "vSaved", profile: "vProfile" };
+
+function weekStrip() {
+  var now = new Date(), d0 = new Date(now), dow = (now.getDay() + 6) % 7;
+  d0.setDate(now.getDate() - dow);
+  var out = [];
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(d0); d.setDate(d0.getDate() + i);
+    var on = d.toDateString() === now.toDateString();
+    var wd = d.toLocaleDateString(document.documentElement.lang || "it", { weekday: "short" }).replace(".", "");
+    out.push('<span class="ag-day' + (on ? " on" : "") + '"' + (on ? ' aria-current="date"' : "") + "><span>" + esc(wd) + "</span><b>" + d.getDate() + "</b></span>");
+  }
+  return '<div class="ag-week" aria-label="' + esc(fx("agMonth")) + '">' + out.join("") + "</div>";
+}
+
+function renderAgenda() {
+  var m = member || {};
+  document.getElementById("agKick").textContent = fx("agKick");
+  document.getElementById("mePh").innerHTML = m.photoUrl ? '<img src="' + esc(m.photoUrl) + '" alt="">' : esc(initialsOf(m.firstName || m.nickname || "MyID"));
+  document.getElementById("addBtn").setAttribute("aria-label", fx("agAdd"));
+  var items = ready ? listActions(["event", "day"]) : null;
+  var html = weekStrip();
+  html += '<div class="sechead"><h2>' + esc(fx("agInAgenda")) + "</h2>" + (items && items.length > 4 ? '<a href="?tab=day">' + esc(fx("seeAll")) + "</a>" : "") + "</div>";
+  if (failed) html += '<div class="pad">' + stateBox(t("common.loadError"), true) + "</div>";
+  else if (!items) html += '<div class="pad"><div class="skeleton" style="height:120px"></div></div>';
+  else if (!items.length) html += '<div class="ag-empty"><p>' + esc(fx("agEmpty")) + '</p><a class="btn primary" href="/proposte.html?tab=day">' + esc(fx("vDay")) + "</a></div>";
+  else html += '<div class="ag-list">' + items.slice(0, 4).map(function (r) {
+    return '<a class="ag-item" href="' + esc(r.link || "?tab=day") + '"><span class="bar"></span><span class="tx"><b>' + esc(r.title || "") + "</b>" + (r.meta ? "<span>" + esc(r.meta) + "</span>" : "") + '</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>';
+  }).join("") + "</div>";
+  html += '<div class="sechead"><h2>' + esc(fx("agWhat")) + '</h2></div><nav class="ag-voci" aria-label="' + esc(fx("agWhat")) + '">' + ORDER.map(function (k) {
+    var v = V[k], ext = v[3].indexOf("http") === 0;
+    return '<a class="ag-voce" href="' + v[3] + '"' + (k === "share" ? ' data-share-app="1"' : "") + (ext ? ' target="_blank" rel="noopener"' : "") + '><span class="ic">' + svg(v[2], 21) + '</span><span class="tx"><b>' + esc(fx(v[0])) + "</b><span>" + esc(fx(v[1])) + '</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>';
+  }).join("") + "</nav>";
+  agendaEl.innerHTML = html;
+}
+
 function render() {
-  renderProfile();
-  renderSeg();
+  var inSub = !!SUBTITLE[tab];
+  agendaEl.hidden = inSub; subEl.hidden = !inSub;
+  if (!inSub) { renderAgenda(); return; }
+  document.getElementById("backLbl").textContent = fx("agBack");
+  document.getElementById("subTitle").textContent = fx(SUBTITLE[tab]);
+  document.getElementById("profileBox").hidden = tab !== "profile";
+  if (tab === "profile") { renderProfile(); listEl.innerHTML = ""; return; }
   if (tab === "wish") { listEl.innerHTML = wishView(); return; }
-  if (tab === "photos") { listEl.innerHTML = '<div class="pad">' + stateBox(t("me.photosEmpty")) + "</div>"; return; }
   if (failed) { listEl.innerHTML = '<div class="pad">' + stateBox(t("common.loadError"), true) + "</div>"; return; }
   if (!ready) { listEl.innerHTML = '<div class="pad"><div class="skeleton" style="height:180px"></div></div>'; return; }
   if (tab === "day") {
@@ -130,12 +161,16 @@ function loadAll() {
     .catch(function () { wish.error = true; render(); });
 }
 
-function go(id) { tab = id; history.replaceState(null, "", "/myid.html?tab=" + id); render(); }
+function go(id) { tab = id || ""; history.pushState(null, "", "/myid.html" + (tab ? "?tab=" + tab : "")); render(); window.scrollTo(0, 0); }
+window.addEventListener("popstate", function () { tab = new URLSearchParams(location.search).get("tab") || ""; render(); });
 document.addEventListener("click", function (e) {
   var g = e.target.closest("[data-goto]");
-  if (g) { go(g.dataset.goto); listEl.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
-  var b = e.target.closest("#seg button[data-tab]");
-  if (b) { go(b.dataset.tab); return; }
+  if (g) { go(g.dataset.goto); return; }
+  if (e.target.closest("#backBtn")) { go(""); return; }
+  var sh = e.target.closest("[data-share-app]");
+  if (sh) { e.preventDefault(); shareBlogness(); return; }
+  var inner = e.target.closest('a[href^="?tab="]');
+  if (inner) { e.preventDefault(); go(inner.getAttribute("href").slice(5)); return; }
   if (e.target.closest("[data-retry]")) { loadAll(); return; }
   var gift = e.target.closest("[data-gift]");
   if (gift) {
@@ -145,21 +180,18 @@ document.addEventListener("click", function (e) {
 });
 onActions(function () { if (ready) render(); });
 
-var menu = document.getElementById("menu"), menuBtn = document.getElementById("menuBtn");
-menuBtn.setAttribute("aria-label", tx("me.settings"));
-menuBtn.addEventListener("click", function () { menu.hidden = !menu.hidden; menuBtn.setAttribute("aria-expanded", String(!menu.hidden)); });
 var langSel = document.getElementById("lang");
 langSel.value = langPref();
 langSel.addEventListener("change", function () { setLangPref(langSel.value); });
 document.getElementById("logout").addEventListener("click", function () { logout("/index.html").catch(function () {}); });
 var shareBtn = document.getElementById("shareBtn");
 shareBtn.textContent = tx("me.share");
-shareBtn.addEventListener("click", function () {
+function shareBlogness() {
   var url = "https://www.blogness.org";
   if (navigator.share) navigator.share({ title: "Blogness", url: url }).catch(function () {});
   else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast(tx("feed.copied")); }).catch(function () {});
-});
+}
+shareBtn.addEventListener("click", shareBlogness);
 
-renderHighlights();
-onFollow(function () { renderProfile(); });
+onFollow(function () { if (tab === "profile") renderProfile(); });
 gate("myid", function (s) { member = s.member; render(); loadAll(); loadFollow().catch(function () {}); });
