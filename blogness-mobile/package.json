@@ -1,0 +1,24 @@
+{
+  "name": "blogness-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Blogness app for iOS and Android (Capacitor shell around the Blogness web app)",
+  "scripts": {
+    "sync": "cap sync",
+    "assets": "capacitor-assets generate --iconBackgroundColor '#142030' --iconBackgroundColorDark '#101216' --splashBackgroundColor '#F6F8FB' --splashBackgroundColorDark '#101216'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.6.10",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/browser": "^7.0.5",
+    "@capacitor/core": "^7.6.10",
+    "@capacitor/ios": "^7.6.10",
+    "@capacitor/share": "^7.0.4",
+    "@capacitor/splash-screen": "^7.0.5",
+    "@capacitor/status-bar": "^7.0.6"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^7.6.10"
+  }
+}

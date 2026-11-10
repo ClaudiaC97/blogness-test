@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Blogness</title>
+<style>
+:root{--bg:#F6F8FB;--ink:#142030;--muted:#556273;--accent:#2353C0;--on:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#101216;--ink:#F3F1EC;--muted:#A6ABB3;--accent:#F0B257;--on:#17140F}}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,sans-serif;text-align:center}
+h1{font-family:Georgia,serif;font-weight:400;font-size:34px;margin:0}p{margin:0;color:var(--muted);line-height:1.5;max-width:30ch}
+button{min-height:48px;padding:0 24px;border:0;border-radius:999px;background:var(--accent);color:var(--on);font:600 16px -apple-system,system-ui,sans-serif}
+</style></head>
+<body><h1>Blogness</h1><p id="msg">Sei offline. Controlla la connessione e riprova.</p><button id="retry" type="button">Riprova</button>
+<script>
+var L=(navigator.language||"it").slice(0,2);var T={en:["You're offline. Check your connection and try again.","Try again"],es:["Estás sin conexión. Comprueba la conexión e inténtalo de nuevo.","Reintentar"]};
+if(T[L]){document.getElementById("msg").textContent=T[L][0];document.getElementById("retry").textContent=T[L][1];}
+document.getElementById("retry").onclick=function(){location.href="https://headless-smpsmnmgijv-blognessllc-140b.wix-site-host.com/index.html";};
+</script></body></html>

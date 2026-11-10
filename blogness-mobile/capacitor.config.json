@@ -1,0 +1,25 @@
+{
+  "appId": "org.blogness.app",
+  "appName": "Blogness",
+  "webDir": "www",
+  "server": {
+    "url": "https://headless-smpsmnmgijv-blognessllc-140b.wix-site-host.com/index.html",
+    "errorPath": "offline.html",
+    "allowNavigation": [
+      "headless-smpsmnmgijv-blognessllc-140b.wix-site-host.com",
+      "*.wix-site-host.com",
+      "www.blogness.org",
+      "blogness.org",
+      "*.wix.com",
+      "*.wixapis.com",
+      "*.facebook.com",
+      "accounts.google.com"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 900, "backgroundColor": "#F6F8FB", "showSpinner": false },
+    "StatusBar": { "overlaysWebView": false }
+  },
+  "ios": { "contentInset": "automatic", "limitsNavigationsToAppBoundDomains": false },
+  "android": { "allowMixedContent": false }
+}
