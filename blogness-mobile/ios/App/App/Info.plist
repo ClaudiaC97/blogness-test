@@ -4,6 +4,17 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>org.blogness.app.auth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>org.blogness.app</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>Blogness</string>
 	<key>CFBundleExecutable</key>

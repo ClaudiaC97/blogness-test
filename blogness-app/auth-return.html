@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Blogness</title>
+<style>
+:root{--bg:#F6F8FB;--ink:#142030;--muted:#556273;--accent:#2353C0;--on:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#101216;--ink:#F3F1EC;--muted:#A6ABB3;--accent:#F0B257;--on:#17140F}}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;box-sizing:border-box;background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,sans-serif;text-align:center}
+h1{font-family:Georgia,serif;font-weight:400;font-size:32px;margin:0}p{margin:0;color:var(--muted);line-height:1.5}
+a{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;background:var(--accent);color:var(--on);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<h1>Blogness</h1>
+<p id="msg">Accesso completato. Torna all'app.</p>
+<a id="back" href="org.blogness.app://auth">Apri l'app Blogness</a>
+<script>
+// Return page for sign-in from the Blogness phone app: hands the one-time code back to the app.
+(function () {
+  var L = (navigator.language || "it").slice(0, 2);
+  var T = { en: ["Signed in. Go back to the app.", "Open the Blogness app"], es: ["Acceso completado. Vuelve a la app.", "Abrir la app Blogness"] };
+  if (T[L]) { document.getElementById("msg").textContent = T[L][0]; document.getElementById("back").textContent = T[L][1]; }
+  var frag = (location.hash || "").slice(1) || (location.search || "").slice(1);
+  var target = "org.blogness.app://auth" + (frag ? "#" + frag : "");
+  document.getElementById("back").href = target;
+  location.replace(target);
+})();
+</script>
+</body>
+</html>
