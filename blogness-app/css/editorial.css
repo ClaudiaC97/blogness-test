@@ -1,0 +1,21 @@
+/* 34A (10 Nov 2026): calm editorial look on every tab, matching MyID and blogness.org.
+   Loaded after app.css. Fahkwang is wider than Instrument Serif, so display sizes are a little smaller. */
+:root{--display:'Fahkwang','Instrument Serif',Georgia,serif}
+.display,.wordmark,.top h1,.post h2,.item-title,.section-title h2,.prose h1,.prose h2,.prose h3,
+.mg-hero h2,.pf-bio .hello,.hello h1,.sechead h2,.ag-title,.ag-subtitle,.login-hero .brand{font-weight:300}
+.login-hero .tagline,.prose blockquote{font-weight:300}
+.wordmark{font-size:22px}
+.top h1{font-size:28px;letter-spacing:0}
+.hello h1{font-size:30px;letter-spacing:-.01em}
+.sechead h2{font-size:23px;letter-spacing:0}
+.section-title h2{font-size:19px}
+.post h2,.item-title{font-size:19px}
+.mg-hero h2{font-size:24px}
+.ag-title{font-size:26px}
+.ag-subtitle{font-size:28px}
+.login-hero .brand{font-size:40px}
+.prose h1{font-size:26px}.prose h2{font-size:22px}.prose h3{font-size:19px}
+/* 35A: "Per te" mark on suggestions matching the member's interests */
+.for-you{display:inline-block;margin:0 0 6px;padding:3px 10px;border-radius:12px;background:var(--accent-soft);color:var(--accent);font:600 11.5px var(--body);letter-spacing:.02em}
+.ig-text .for-you{margin-right:8px}
+.for-you-lead{margin:0;padding:14px 16px 4px;font-size:13.5px;line-height:1.5;color:var(--muted)}

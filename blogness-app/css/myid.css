@@ -1,0 +1,71 @@
+/* MyID redesign (10 Nov 2026): calm editorial layout, new section order. Scoped to .my so other tabs are unchanged. */
+.my{--display:'Fahkwang','Instrument Serif',Georgia,serif}
+.my-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px}
+.my-head .brand{font-family:var(--display);font-weight:300;font-size:24px;color:var(--ink);letter-spacing:.01em}
+.my-head .acts{display:flex;gap:8px}
+.my-ib{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.my-ib.add{background:var(--accent);color:var(--on-accent);border:0}
+.my-ib.gear{background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+.my-hero{padding:0 20px}
+.my-cover{height:150px;border-radius:16px;background:var(--t1);overflow:hidden}
+.my-cover img{width:100%;height:100%;object-fit:cover}
+.my-av{width:84px;height:84px;border-radius:50%;border:4px solid var(--bg);background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:300;font-size:34px;margin:-42px 0 0 12px;overflow:hidden;position:relative}
+.my-av img{width:100%;height:100%;object-fit:cover}
+.my-name{margin:12px 0 2px;font-family:var(--display);font-weight:300;font-size:32px;line-height:1.1;letter-spacing:-.01em;color:var(--ink)}
+.my-handle{font-size:14px;color:var(--muted)}
+.my-motto{display:block;margin:12px 0 0;font-family:var(--display);font-style:italic;font-weight:300;font-size:17px;line-height:1.45;color:var(--slate);text-decoration:none}
+.my-motto.empty{color:var(--muted)}
+.my-btns{display:flex;gap:10px;margin-top:18px}
+.my-btns a,.my-btns button{flex:1;height:44px;border-radius:22px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 14px var(--body);display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.my-sec{margin:32px 20px 0}
+.my-sec.full{margin-left:0;margin-right:0}
+.my-sec.full>.my-sh,.my-sec.full>.my-kick{padding:0 20px}
+.my-kick{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.my-sh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:6px 0 14px}
+.my-sh h2{margin:0;font-family:var(--display);font-weight:300;font-size:24px;color:var(--ink)}
+.my-sh a,.my-sh button{font:600 13px var(--body);color:var(--accent);text-decoration:none;background:none;border:0;cursor:pointer;padding:8px 0}
+.my-day{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.my-day a{display:flex;gap:14px;align-items:center;padding:15px 16px;text-decoration:none;color:var(--ink);border-top:1px solid var(--soft);min-height:44px}
+.my-day a:first-child{border-top:0}
+.my-day .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+.my-day .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.my-day .tx b{font-size:15px;font-weight:500}
+.my-day .tx span{font-size:13px;color:var(--muted)}
+.my-day svg{color:var(--muted);flex:none}
+.my-empty{padding:18px;border-radius:16px;background:var(--accent-soft)}
+.my-empty p{margin:0 0 12px;font-size:14px;line-height:1.5;color:var(--ink)}
+.my-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.my-tile{height:86px;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13px var(--body);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-decoration:none;text-align:center;padding:0 6px}
+.my-tile svg{color:var(--brand)}
+.my-all{margin-top:12px}
+.my-all[hidden]{display:none}
+.my-week{display:flex;gap:6px}
+.my-week .ag-day{border-radius:14px}
+.my-trip{display:block;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;color:var(--ink)}
+.my-trip .ph{height:120px;background:var(--t2)}
+.my-trip .bd{padding:14px 16px}
+.my-trip .bd b{display:block;font-family:var(--display);font-weight:300;font-size:21px}
+.my-trip .bd span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+.my-wish{display:flex;gap:10px;padding:0 20px}
+.my-wish a{flex:1;min-width:0;text-decoration:none;color:var(--ink)}
+.my-wish .ph{height:110px;border-radius:12px;overflow:hidden;background:var(--t1)}
+.my-wish .ph img{width:100%;height:100%;object-fit:cover}
+.my-wish span{display:block;font-size:13px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.my-people{display:flex;flex-direction:column;gap:12px}
+.my-person{display:flex;align-items:center;gap:12px}
+.my-person .pav{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);overflow:hidden;flex:none}
+.my-person .pav img{width:100%;height:100%;object-fit:cover}
+.my-person .nm{flex:1;min-width:0;font-size:15px;font-weight:500;color:var(--ink)}
+.my-person button{height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13px var(--body);cursor:pointer}
+.my-person button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent-soft)}
+.my-chips{display:flex;flex-wrap:wrap;gap:8px}
+.my-chip{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:18px;background:var(--mist);font-size:13.5px;color:var(--slate);text-decoration:none}
+.my-chip.add{background:transparent;border:1px dashed var(--t2);color:var(--muted)}
+.my-note{font-size:13px;color:var(--muted);margin:-8px 0 12px}
+/* 36A: opt-in switch and shared interests */
+.my-switch{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer}
+.my-switch input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--accent);flex:none}
+.my-switch b{display:block;font-size:14px;font-weight:600;color:var(--ink)}
+.my-switch small{display:block;margin-top:3px;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.my-person .nm{display:flex;flex-direction:column}
+.my-common{font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}

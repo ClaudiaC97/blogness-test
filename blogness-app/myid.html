@@ -7,25 +7,54 @@
 <meta name="theme-color" content="#F6F8FB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101216" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fahkwang:ital,wght@0,300;0,400;1,300&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/app.css">
-</head>
+<link rel="stylesheet" href="/css/myid.css">
+<link rel="stylesheet" href="/css/editorial.css">
+<link rel="stylesheet" href="/css/vivid.css">
+<link rel="modulepreload" href="/js/app/myid.js">
+<link rel="modulepreload" href="/js/app/i18n.js">
+<link rel="modulepreload" href="/js/app/more.js">
+<link rel="modulepreload" href="/js/org/member-store.js">
+<link rel="modulepreload" href="/js/wix/items.js">
+<link rel="modulepreload" href="/js/wix/media.js">
+<link rel="modulepreload" href="/js/app/actions.js">
+<link rel="modulepreload" href="/js/app/follow.js">
+<link rel="modulepreload" href="/js/app/social-text.js">
+<link rel="modulepreload" href="/js/app/common.js">
+<link rel="modulepreload" href="/js/org/client.js">
+<link rel="modulepreload" href="/js/app/affinity.js">
+<link rel="modulepreload" href="/js/org/items.js">
+<link rel="modulepreload" href="/js/org/cms-types.js">
+<link rel="modulepreload" href="/js/org/media.js">
+<link rel="modulepreload" href="/js/org/items-core.js">
+<link rel="modulepreload" href="/js/org/config.js">
+<link rel="modulepreload" href="/js/wix/cms-types.js">
+<link rel="modulepreload" href="/js/wix/client.js">
+<link rel="modulepreload" href="/js/wix/items-core.js">
+<link rel="modulepreload" href="/js/wix/config.js">
+<link rel="modulepreload" href="/js/org/auth.js">
+<link rel="modulepreload" href="/js/org/members-types.js">
+<link rel="modulepreload" href="/js/org/members.js">
+<link rel="modulepreload" href="/js/org/members-core.js">
+<link rel="modulepreload" href="/js/org/auth-core.js">
+<script src="/js/app/vivid.js" defer></script>
+<script id="wix-site-script" src="https://manage.wix.com/_api/headless-business-setup/v1/headless-business/site-script.js" data-client-id="b1008f7c-1046-4a87-9c53-d2fd6e8e1c8a" async></script></head>
 <body>
-<div class="app">
-  <header class="top">
-    <div class="top-row ag-head">
-      <a href="/myid.html" class="ag-me" id="meLink"><span class="ag-ph" id="mePh"></span><span><span class="ag-kick" id="agKick"></span><b class="ag-title">MyID</b></span></a>
-      <span style="display:flex;gap:6px">
-        <a class="ag-plus" href="/proposte.html?tab=day" id="addBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
-      </span>
-    </div>
+<div class="app my">
+  <header class="my-head">
+    <span class="brand">MyID</span>
+    <span class="acts">
+      <a class="my-ib add" href="/proposte.html?tab=day" id="addBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
+      <a class="my-ib gear" href="?tab=profile" id="gearBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
+    </span>
   </header>
   <section id="agenda"></section>
   <section id="sub" hidden>
     <button type="button" class="ag-back" id="backBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span id="backLbl"></span></button>
     <h1 class="ag-subtitle" id="subTitle"></h1>
     <div id="profileBox" hidden>
-      <section class="pf" id="pf"><div class="skeleton" style="height:92px;flex:1"></div></section>
       <section class="pf-bio" id="bio"></section>
       <div class="pf-btns">
         <a class="btn" href="https://www.blogness.org/my-id" target="_blank" rel="noopener" data-i18n="me.edit"></a>

@@ -1,4 +1,5 @@
-import { t, fmtDate } from "/js/app/i18n.js";
+import { t, fmtDate, LANG } from "/js/app/i18n.js";
+import { loadInterests, rankByInterest, interestName } from "/js/app/match.js";
 import { queryItems } from "/js/wix/items.js";
 import { imgSrc } from "/js/wix/media.js";
 import { fetchEventsPage } from "/js/org/events.js";
@@ -14,6 +15,21 @@ var seg = document.getElementById("seg");
 var tab = new URLSearchParams(location.search).get("tab") || "day";
 var data = { day: null, events: null, trips: null };
 var errors = {};
+// 35A: suggestions closest to the member's interests come first, marked "Per te".
+var myInterests = null;
+var FY = { it: ["Per te", "In alto le proposte più vicine ai tuoi interessi: "], en: ["For you", "Suggestions closest to your interests come first: "], es: ["Para ti", "Primero las propuestas más cercanas a tus intereses: "] };
+function fy(i) { return (FY[LANG] || FY.it)[i]; }
+var TEXT_OF = {
+  day: function (d) { return [d.title, d.text, d.moment].join(" "); },
+  events: function (e) { return [e.title, e.shortDescription, e.description, e.locationName, (e.categories || []).map(function (c) { return c && (c.name || c.title || c); }).join(" ")].join(" "); },
+  trips: function (v) { return [v.title, v.text, v.length, v.imageLabel].join(" "); }
+};
+function rank(which) { if (data[which] && myInterests && myInterests.length) data[which] = rankByInterest(data[which], TEXT_OF[which], myInterests); }
+function forYou(it) { return it && it._forYou && it._forYou.length ? '<span class="for-you">' + esc(fy(0)) + "</span>" : ""; }
+function forYouLead() {
+  if (!myInterests || !myInterests.length) return "";
+  return '<p class="for-you-lead">' + esc(fy(1) + myInterests.map(interestName).join(", ") + ".") + "</p>";
+}
 
 export function eventDate(e) {
   if (e.dateTbd) return e.dateTbdMessage || "";
@@ -25,7 +41,7 @@ function dayView(items) {
   return '<p class="lead" style="padding:14px 16px 4px">' + esc(t("prop.dayLead")) + "</p>" + items.map(function (d) {
     var on = has("day", "day-" + d._id);
     return '<div class="dayrow"><span class="time"><span class="ring"><span class="disc">' + esc(d.time) + "</span></span></span>" +
-      '<span class="body"><span class="eyebrow accent">' + esc(d.moment) + "</span><b>" + esc(d.title) + "</b>" + (d.text ? "<p>" + esc(d.text) + "</p>" : "") +
+      '<span class="body"><span class="eyebrow accent">' + esc(d.moment) + "</span>" + forYou(d) + "<b>" + esc(d.title) + "</b>" + (d.text ? "<p>" + esc(d.text) + "</p>" : "") +
       '<button type="button" class="btn ' + (on ? "on" : "primary") + '" data-day="' + esc(d._id) + '" aria-pressed="' + on + '">' + esc(t(on ? "prop.added" : "prop.add")) + "</button></span></div>";
   }).join("");
 }
@@ -40,7 +56,7 @@ function eventsView(items) {
       '<div class="ig-acts"><a class="icon-btn" href="' + href + '" aria-label="' + esc(t("prop.details")) + '"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg></a>' +
         '<button type="button" class="icon-btn" data-share-event="' + esc(e.slug) + '" aria-label="' + esc(tx("feed.share")) + '">' + SEND + '</button><span class="sp"></span>' +
         '<button type="button" class="icon-btn" data-event="' + esc(e.slug) + '" aria-pressed="' + saved + '" aria-label="' + esc(t(saved ? "common.saved" : "common.save")) + '">' + BOOKMARK(saved) + "</button></div>" +
-      '<div class="ig-text"><span><b>' + esc(e.title) + "</b>" + (e.shortDescription ? " " + esc(e.shortDescription) : "") + "</span>" + (e.priceLabel ? '<span class="when">' + esc(e.priceLabel) + "</span>" : "") + "</div>" +
+      '<div class="ig-text">' + forYou(e) + '<span><b>' + esc(e.title) + "</b>" + (e.shortDescription ? " " + esc(e.shortDescription) : "") + "</span>" + (e.priceLabel ? '<span class="when">' + esc(e.priceLabel) + "</span>" : "") + "</div>" +
       '<div class="cta-row"><a class="btn primary" href="' + href + '">' + esc(t("prop.details")) + "</a></div></article>";
   }).join("");
 }
@@ -51,7 +67,7 @@ function tripsView(items) {
     return '<article class="ig"><div class="ig-head"><span class="ring"><span class="av" style="background:var(--brand);color:var(--on-accent)">B</span></span><span class="who"><span class="name">blogness.travel</span><span class="place">' + esc(v.length || "") + "</span></span></div>" +
       media(v.image ? imgSrc(v.image, 1080, 1080) : "", i + 1, v.imageLabel ? '<span class="cap">' + esc(v.imageLabel) + "</span>" : "") +
       '<div class="ig-acts"><span class="sp"></span><button type="button" class="icon-btn" data-trip="' + esc(v._id) + '" aria-pressed="' + saved + '" aria-label="' + esc(t(saved ? "common.saved" : "common.save")) + '">' + BOOKMARK(saved) + "</button></div>" +
-      '<div class="ig-text"><span><b>' + esc(v.title) + "</b>" + (v.text ? " " + esc(v.text) : "") + "</span></div>" +
+      '<div class="ig-text">' + forYou(v) + '<span><b>' + esc(v.title) + "</b>" + (v.text ? " " + esc(v.text) : "") + "</span></div>" +
       '<div class="cta-row"><a class="btn quiet" href="/contatti.html?tab=chat">' + esc(t("prop.organize")) + "</a></div></article>";
   }).join("");
 }
@@ -61,7 +77,7 @@ function render() {
   var items = data[tab];
   if (!items) { list.innerHTML = '<div class="pad"><div class="skeleton"></div></div>'; return; }
   if (!items.length) { list.innerHTML = '<div class="pad">' + stateBox(t("prop.empty")) + "</div>"; return; }
-  list.innerHTML = tab === "day" ? dayView(items) : tab === "events" ? eventsView(items) : tripsView(items);
+  list.innerHTML = forYouLead() + (tab === "day" ? dayView(items) : tab === "events" ? eventsView(items) : tripsView(items));
 }
 
 function load(which) {
@@ -69,7 +85,7 @@ function load(which) {
   var p = which === "events"
     ? fetchEventsPage({ limit: 20 }).then(function (r) { return r.events || []; })
     : queryItems(which === "day" ? "dayPlans" : "tripProposals", which === "day" ? { sort: [{ field: "order", direction: "asc" }], limit: 20 } : { limit: 20 }).then(function (r) { return r.items || []; });
-  p.then(function (items) { data[which] = items; if (which === tab) render(); })
+  p.then(function (items) { data[which] = items; rank(which); if (which === tab) render(); })
     .catch(function () { errors[which] = true; if (which === tab) render(); });
 }
 
@@ -104,5 +120,6 @@ document.getElementById("today").textContent = fmtDate(new Date().toISOString(),
 gate("proposte", function () {
   select(tab);
   load("day"); load("events"); load("trips");
+  loadInterests().then(function (list) { myInterests = list; rank("day"); rank("events"); rank("trips"); render(); });
   loadActions().catch(function () {});
 });

@@ -4,7 +4,8 @@ import { t } from "/js/app/i18n.js";
 import { tx } from "/js/app/more.js";
 import { fx } from "/js/app/social-text.js";
 
-export var TONES = ["var(--t1)", "var(--t2)", "var(--line)", "var(--t4)", "#D3DCE3", "var(--mist)"];
+// 40A: soft colour tints (defined in vivid.css, light and dark) for placeholders and avatars.
+export var TONES = ["var(--s-sky,var(--t1))", "var(--s-violet,var(--t2))", "var(--s-mint,var(--t4))", "var(--s-coral,var(--line))", "var(--s-sun,#D3DCE3)", "var(--s-rose,var(--mist))"];
 
 export function esc(s) {
   return String(s == null ? "" : s)

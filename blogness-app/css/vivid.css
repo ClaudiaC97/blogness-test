@@ -1,0 +1,152 @@
+/* 40A (10 Nov 2026) — "più interattiva e colorata": same layout and editorial type, livelier colour and motion.
+   Loaded LAST on every page. Remove this file's <link> to go back to the previous look. */
+:root{
+  --c-coral:#FF6B57; --c-sun:#F5A524; --c-mint:#16A889; --c-violet:#7B5CFF; --c-sky:#2F8CFF; --c-rose:#EE4F8F;
+  --s-coral:#FFE9E5; --s-sun:#FFF3DC; --s-mint:#DFF6F0; --s-violet:#ECE7FF; --s-sky:#E2EEFF; --s-rose:#FDE5EF;
+  --grad:linear-gradient(135deg,#2353C0 0%,#7B5CFF 55%,#EE4F8F 100%);
+  --grad-warm:linear-gradient(135deg,#FF6B57,#F5A524);
+  --ring:conic-gradient(from 210deg,#2F8CFF,#7B5CFF,#EE4F8F,#FF6B57,#F5A524,#16A889,#2F8CFF);
+  --lift:0 10px 28px -12px rgba(35,83,192,.35);
+  --t1:#E2EEFF; --t2:#ECE7FF; --t4:#DFF6F0;
+}
+@media (prefers-color-scheme: dark){
+  .plan::after{background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%)}
+  :root{
+    --c-coral:#FF8A7A; --c-sun:#FFC04D; --c-mint:#3FD1B0; --c-violet:#A08BFF; --c-sky:#6AAEFF; --c-rose:#FF7EB0;
+    --s-coral:#3A2420; --s-sun:#3A3020; --s-mint:#16332D; --s-violet:#272240; --s-sky:#1B2A40; --s-rose:#3A2030;
+    --grad:linear-gradient(135deg,#F0B257 0%,#FF7EB0 55%,#A08BFF 100%);
+    --lift:0 10px 28px -12px rgba(0,0,0,.6);
+    --t1:#1B2A40; --t2:#272240; --t4:#16332D;
+  }
+}
+
+/* Smooth page-to-page transitions (Chrome, Edge, Safari 18+; others simply navigate) */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vt-out .18s ease-in both}
+::view-transition-new(root){animation:vt-in .26s cubic-bezier(.2,.8,.2,1) both}
+.tabs{view-transition-name:tabbar}
+@keyframes vt-out{to{opacity:0;transform:translateY(-6px)}}
+@keyframes vt-in{from{opacity:0;transform:translateY(10px)}}
+
+/* Brand touches */
+.wordmark,.my-head .brand{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.icon-btn .pip,.icon-btn .num{background:var(--c-coral);animation:pip 2.4s ease-in-out infinite}
+@keyframes pip{0%,100%{box-shadow:0 0 0 0 rgba(255,107,87,.45)}50%{box-shadow:0 0 0 6px rgba(255,107,87,0)}}
+
+/* Buttons: gradient primary, springy press */
+.btn,.pills button,.my-btns a,.my-btns button,.my-person button,.icon-btn,.my-ib,.ag-plus{transition:transform .15s cubic-bezier(.3,1.6,.5,1),box-shadow .2s,background-color .2s,color .2s}
+.btn.primary,.my-ib.add,.ag-plus{background:var(--grad);border-color:transparent;box-shadow:var(--lift)}
+.btn:active,.pills button:active,.my-btns a:active,.my-btns button:active,.my-person button:active,.icon-btn:active,.my-ib:active,.ag-plus:active{transform:scale(.94)}
+.pills button[aria-pressed="true"]{background:var(--grad);border-color:transparent;color:var(--on-accent);box-shadow:var(--lift)}
+.utabs button[aria-pressed="true"]{border-image:var(--grad) 1;border-bottom-width:3px}
+
+/* Cards: gentle lift on hover / press */
+.acard .pic,.ig-media,.my-trip,.my-tile,.ag-voce,.ag-item,.my-day,.list,.card,.pcard,.grid2 .tile .ph,.my-wish .ph,.dm{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s}
+@media (hover:hover){
+  .acard .pic:hover,.my-trip:hover,.my-tile:hover,.ag-voce:hover,.ag-item:hover,.pcard:hover,.grid2 .tile:hover .ph,.my-wish a:hover .ph{transform:translateY(-3px);box-shadow:var(--lift)}
+}
+.acard .pic:active,.my-trip:active,.my-tile:active,.ag-voce:active,.ag-item:active,.pcard:active,.grid2 .tile:active .ph,.dm:active{transform:scale(.98)}
+.acard .pic img,.ig-media img,.grid2 .tile .ph img,.my-wish .ph img{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+@media (hover:hover){.acard .pic:hover img,.grid2 .tile:hover .ph img,.my-wish a:hover .ph img{transform:scale(1.05)}}
+
+/* A colour for every entry: MyID tiles, agenda entries, day list, chips, friends */
+.my-grid>:nth-child(6n+1),.ag-voci>:nth-child(6n+1) .ic{--c:var(--c-sky);--s:var(--s-sky)}
+.my-grid>:nth-child(6n+2),.ag-voci>:nth-child(6n+2) .ic{--c:var(--c-coral);--s:var(--s-coral)}
+.my-grid>:nth-child(6n+3),.ag-voci>:nth-child(6n+3) .ic{--c:var(--c-mint);--s:var(--s-mint)}
+.my-grid>:nth-child(6n+4),.ag-voci>:nth-child(6n+4) .ic{--c:var(--c-violet);--s:var(--s-violet)}
+.my-grid>:nth-child(6n+5),.ag-voci>:nth-child(6n+5) .ic{--c:var(--c-sun);--s:var(--s-sun)}
+.my-grid>:nth-child(6n+6),.ag-voci>:nth-child(6n+6) .ic{--c:var(--c-rose);--s:var(--s-rose)}
+.my-tile{background:var(--s);border-color:transparent}
+.my-tile svg{color:var(--c);transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.my-tile:active svg,.ag-voce:active .ic{transform:scale(1.15) rotate(-6deg)}
+.ag-voce .ic{background:var(--s);color:var(--c);transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.my-day a:nth-child(5n+1) .dot,.ag-list>:nth-child(5n+1) .bar{background:var(--c-sky)}
+.my-day a:nth-child(5n+2) .dot,.ag-list>:nth-child(5n+2) .bar{background:var(--c-coral)}
+.my-day a:nth-child(5n+3) .dot,.ag-list>:nth-child(5n+3) .bar{background:var(--c-mint)}
+.my-day a:nth-child(5n+4) .dot,.ag-list>:nth-child(5n+4) .bar{background:var(--c-violet)}
+.my-day a:nth-child(5n+5) .dot,.ag-list>:nth-child(5n+5) .bar{background:var(--c-sun)}
+.my-day .dot{width:10px;height:10px}
+.my-chips>:nth-child(5n+1){background:var(--s-sky);color:var(--c-sky)}
+.my-chips>:nth-child(5n+2){background:var(--s-coral);color:var(--c-coral)}
+.my-chips>:nth-child(5n+3){background:var(--s-mint);color:var(--c-mint)}
+.my-chips>:nth-child(5n+4){background:var(--s-violet);color:var(--c-violet)}
+.my-chips>:nth-child(5n+5){background:var(--s-sun);color:#B56E00}
+.my-chip{font-weight:600}
+.my-chip.add{background:transparent !important;color:var(--muted) !important}
+.acards>:nth-child(4n+1) .chip{background:var(--s-sky);color:var(--c-sky)}
+.acards>:nth-child(4n+2) .chip{background:var(--s-coral);color:var(--c-coral)}
+.acards>:nth-child(4n+3) .chip{background:var(--s-mint);color:var(--c-mint)}
+.acards>:nth-child(4n+4) .chip{background:var(--s-violet);color:var(--c-violet)}
+.for-you{background:var(--grad);color:var(--on-accent)}
+.badge-art{background:var(--s-violet);color:var(--c-violet)}
+
+/* Week strip and today */
+.ag-day{transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
+.ag-day:active{transform:scale(.93)}
+.ag-day.on{background:var(--grad);border-color:transparent;box-shadow:var(--lift)}
+
+/* Home: plan card and friends */
+.plan{background:linear-gradient(140deg,var(--s-sky),var(--s-violet) 60%,var(--s-rose));position:relative;overflow:hidden}
+.plan::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%);pointer-events:none}
+.plan .kick{color:var(--c-violet)}
+.friends-row .ph.ring{box-shadow:none;border:3px solid transparent;background:linear-gradient(var(--s-sky),var(--s-sky)) padding-box,var(--ring) border-box}
+.friends-row .ph.ring img{border-radius:50%;border:2px solid var(--bg)}
+.friends-row .fr:nth-child(5n+2) .ph:not(.ring){background:var(--s-coral);color:var(--c-coral)}
+.friends-row .fr:nth-child(5n+3) .ph:not(.ring){background:var(--s-mint);color:var(--c-mint)}
+.friends-row .fr:nth-child(5n+4) .ph:not(.ring){background:var(--s-violet);color:var(--c-violet)}
+.friends-row .fr:nth-child(5n+5) .ph:not(.ring){background:var(--s-sun);color:#B56E00}
+.friends-row .add .ph{border-color:var(--c-violet);color:var(--c-violet)}
+.story .ring{animation:spin 9s linear infinite paused}
+.story:hover .ring,.story:focus-visible .ring{animation-play-state:running}
+@keyframes spin{to{filter:hue-rotate(360deg)}}
+
+/* Music hero: animated pins */
+.mg-hero{background:linear-gradient(135deg,#142030,#2B2466 60%,#5A2A6E)}
+.mg-hero .pin{animation:pin 2.6s ease-in-out infinite}
+.mg-hero .pin:nth-of-type(2){animation-delay:.4s;background:#FF7EB0}
+.mg-hero .pin:nth-of-type(3){animation-delay:.8s;background:#6AAEFF}
+.mg-hero .pin:nth-of-type(4){animation-delay:1.2s;background:#3FD1B0}
+.mg-hero .pin:nth-of-type(5){animation-delay:1.6s}
+@keyframes pin{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* Bottom bar: coloured pill behind the active tab, bounce on tap */
+.tabs a svg,.tabs a .me{transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.tabs a[aria-current="page"]::before{content:"";position:absolute;top:6px;left:50%;width:54px;height:32px;margin-left:-27px;border-radius:16px;background:var(--accent-soft);z-index:-1;animation:tabin .3s cubic-bezier(.3,1.6,.5,1)}
+.tabs a{z-index:0}
+.tabs a:active svg,.tabs a:active .me{transform:scale(.85)}
+.tabs a.tap svg,.tabs a.tap .me{animation:tabbounce .4s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tabin{from{transform:scaleX(.4);opacity:0}}
+@keyframes tabbounce{40%{transform:translateY(-4px) scale(1.12)}}
+
+/* Hearts and saves */
+.ig-acts .icon-btn[aria-pressed="true"] svg,.acard .save[aria-pressed="true"] svg{animation:beat .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes beat{30%{transform:scale(1.3)}}
+.ig-media .pop{color:#fff}
+.burst{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:50;animation:burst .6s ease-out forwards}
+@keyframes burst{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+
+/* Reveal on scroll (added by vivid.js) */
+.rv{opacity:0;transform:translateY(14px)}
+.rv.in{opacity:1;transform:none;transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.2,1);transition-delay:var(--d,0s)}
+
+/* Tap ripple (added by vivid.js) */
+.rip{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.18;transform:scale(0);animation:rip .55s ease-out forwards}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+
+/* Pull to refresh (added by vivid.js) */
+.ptr{position:fixed;left:50%;top:10px;z-index:40;width:38px;height:38px;margin-left:-19px;border-radius:50%;background:var(--surface);box-shadow:var(--lift);display:flex;align-items:center;justify-content:center;color:var(--accent);opacity:0;transform:translateY(-50px);pointer-events:none}
+.ptr svg{transition:transform .1s linear}
+.ptr.go svg{animation:ptrspin .8s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+
+/* Skeleton and toast with colour */
+.skeleton{background:linear-gradient(100deg,var(--s-sky) 20%,var(--s-violet) 40%,var(--s-rose) 60%,var(--s-sky) 80%);background-size:300% 100%}
+.toast{background:var(--grad);color:var(--on-accent);animation:toast .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes toast{from{opacity:0;transform:translate(-50%,16px) scale(.95)}}
+.state{border-color:var(--c-violet);border-style:dashed;background:linear-gradient(160deg,var(--surface),var(--s-violet))}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .rv{opacity:1;transform:none}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}
