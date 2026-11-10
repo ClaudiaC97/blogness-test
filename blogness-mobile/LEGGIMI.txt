@@ -1,0 +1,32 @@
+BLOGNESS – app per iPhone e Android
+===================================
+
+Cosa contiene
+- ios/       progetto Xcode (iPhone)
+- android/   progetto Android Studio
+- www/       pagina di avvio e pagina "offline"
+- assets/    icona e schermate di avvio originali
+- capacitor.config.json  impostazioni (nome Blogness, id org.blogness.app, indirizzo dell'app web)
+
+L'app apre l'app web Blogness: ogni modifica fatta all'app web compare subito anche sul telefono.
+
+PROVA SU IPHONE (Mac con Xcode, Apple ID anche gratuito)
+1. Installa Xcode (App Store), Node.js LTS (nodejs.org) e CocoaPods:  sudo gem install cocoapods
+2. Apri il Terminale nella cartella blogness-mobile e scrivi:
+     npm install
+     npx cap sync ios
+     npx cap open ios
+3. In Xcode: App > Signing & Capabilities > Automatically manage signing > Team = il tuo Apple ID.
+   Se org.blogness.app non è disponibile, usa org.blogness.app.claudia
+4. Collega l'iPhone, attiva Modalità sviluppatore, scegli l'iPhone in alto e premi ▶.
+5. Sull'iPhone: Impostazioni > Generali > VPN e gestione dispositivi > Autorizza.
+
+PROVA SU ANDROID (Android Studio)
+1. Installa Android Studio e Node.js LTS.
+2. Nel Terminale, nella cartella blogness-mobile:
+     npm install
+     npx cap sync android
+     npx cap open android
+3. Collega il telefono (Opzioni sviluppatore > Debug USB attivo) e premi ▶ in Android Studio.
+
+Accesso con Google/Facebook: si apre il browser del telefono e poi si torna da soli nell'app.
