@@ -2,13 +2,13 @@
 // - App pages, styles and scripts: served from the phone at once, refreshed in the background.
 // - Fonts and photos (Google Fonts, static.wixstatic.com): kept on the phone after the first view.
 // - Wix APIs, sign-in, chat and everything else: always live from the network, never cached.
-var VERSION = "b40a-1";
+var VERSION = "b42-1";
 var SHELL = "shell-" + VERSION, MEDIA = "media-v1";
 var PRECACHE = [
   "/feed.html", "/proposte.html", "/musica.html", "/contatti.html", "/myid.html", "/notifiche.html", "/post.html", "/event.html",
   "/css/app.css", "/css/editorial.css", "/css/myid.css", "/css/social.css", "/css/vivid.css",
   "/js/app/vivid.js", "/js/app/i18n.js", "/js/app/common.js", "/js/app/more.js", "/js/app/social-text.js", "/js/app/actions.js",
-  "/js/app/feed.js", "/js/app/proposte.js", "/js/app/musica.js", "/js/app/contatti.js", "/js/app/myid.js", "/js/app/notifiche.js"
+  "/js/app/feed.js", "/js/app/proposte.js", "/viaggio.html", "/js/app/trip.js", "/js/app/trips-data.js", "/js/app/tastes.js", "/js/app/songs.js", "/js/app/song-card.js", "/js/app/match.js", "/js/app/affinity.js", "/js/app/musica.js", "/js/app/contatti.js", "/js/app/myid.js", "/js/app/notifiche.js"
 ];
 var NO_CACHE = ["/index.html", "/auth-return.html", "/sw.js"];
 

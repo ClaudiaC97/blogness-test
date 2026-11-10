@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blogness · Pianifica un viaggio</title>
+<meta name="theme-color" content="#F6F8FB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101216" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fahkwang:ital,wght@0,300;0,400;1,300&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/myid.css">
+<link rel="stylesheet" href="/css/editorial.css">
+<link rel="stylesheet" href="/css/vivid.css">
+<link rel="modulepreload" href="/js/app/trip.js">
+<link rel="modulepreload" href="/js/app/i18n.js">
+<link rel="modulepreload" href="/js/app/actions.js">
+<link rel="modulepreload" href="/js/app/common.js">
+<link rel="modulepreload" href="/js/app/trips-data.js">
+<link rel="modulepreload" href="/js/org/items.js">
+<link rel="modulepreload" href="/js/org/client.js">
+<link rel="modulepreload" href="/js/org/config.js">
+<link rel="modulepreload" href="/js/org/cms-types.js">
+<link rel="modulepreload" href="/js/org/media.js">
+<link rel="modulepreload" href="/js/org/items-core.js">
+<link rel="modulepreload" href="/js/org/member-store.js">
+<link rel="modulepreload" href="/js/app/more.js">
+<link rel="modulepreload" href="/js/app/social-text.js">
+<link rel="modulepreload" href="/js/org/auth.js">
+<link rel="modulepreload" href="/js/org/members-types.js">
+<link rel="modulepreload" href="/js/org/members.js">
+<link rel="modulepreload" href="/js/org/members-core.js">
+<link rel="modulepreload" href="/js/org/auth-core.js">
+<script src="/js/app/vivid.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <div class="backbar"><a class="backlink" href="/myid.html" id="back"></a></div>
+  <header class="top" style="border-bottom:0;position:static">
+    <div class="top-row"><h1 id="title"></h1></div>
+  </header>
+  <form class="trip-form" id="tripForm" novalidate>
+    <div class="field"><label for="dest" id="destLbl"></label><input id="dest" name="dest" type="text" list="destList" autocomplete="off" required maxlength="80"><datalist id="destList"></datalist></div>
+    <div class="field-row">
+      <div class="field"><label for="from" id="fromLbl"></label><input id="from" name="from" type="date"></div>
+      <div class="field"><label for="to" id="toLbl"></label><input id="to" name="to" type="date"></div>
+    </div>
+    <div class="field"><span class="lbl" id="whoLbl"></span><div class="opts" id="who" role="radiogroup"></div></div>
+    <div class="field"><span class="lbl" id="likeLbl"></span><div class="opts" id="likes"></div></div>
+    <div class="field"><label for="note" id="noteLbl"></label><textarea id="note" name="note" rows="2" maxlength="280"></textarea></div>
+    <label class="my-switch" style="margin-top:0"><input type="checkbox" id="share"><span><b id="shareLbl"></b><small id="shareNote"></small></span></label>
+    <p class="err" id="err" role="alert"></p>
+    <button type="submit" class="btn primary block" id="save"></button>
+  </form>
+  <section style="margin-top:28px">
+    <div class="sechead"><h2 id="mineTitle"></h2></div>
+    <div id="mine"></div>
+  </section>
+  <div style="height:120px"></div>
+</div>
+<nav class="tabs" id="tabs" aria-label="Menu"></nav>
+<script type="module" src="/js/app/trip.js"></script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 // Matching is by keywords in IT / EN / ES on each item's own text; items keep their original order within the same score.
 import { LANG } from "/js/app/i18n.js";
 import { wixRequest } from "/js/org/client.js";
+import { loadTastes, isTaste, tasteKeywords, tasteLabel } from "/js/app/tastes.js";
 
 var KEYWORDS = {
   travel: ["viagg", "travel", "trip", "itinerar", "weekend", "giorni", "days", "viaj", "passegg", "walk", "paseo", "città", "city", "ciudad", "mete", "destin"],
@@ -33,11 +34,15 @@ export function loadInterests() {
     var key = Object.keys(cf).filter(function (k) { return k.indexOf("interests") >= 0; })[0];
     var raw = key && cf[key] ? String(cf[key].value || "") : "";
     return raw.split(",").map(norm).filter(Boolean);
-  }).catch(function () { return []; });
+  }).catch(function () { return []; }).then(function (base) {
+    // 42: music, film and sport tastes refine the ranking too.
+    return loadTastes().then(function (tk) { return base.concat(tk); }).catch(function () { return base; });
+  });
   return cache;
 }
 
 export function interestName(k) {
+  if (isTaste(k)) return tasteLabel(k);
   var row = NAMES[norm(k)];
   if (row) return row[LANG === "en" ? 1 : LANG === "es" ? 2 : 0];
   var w = String(k).replace(/[-_]+/g, " ").trim();
@@ -48,7 +53,7 @@ export function interestName(k) {
 export function matches(text, interests) {
   var t = " " + String(text || "").toLowerCase() + " ";
   return (interests || []).filter(function (k) {
-    return (KEYWORDS[k] || [k.replace(/-/g, " ")]).some(function (w) { return t.indexOf(w) >= 0; });
+    return (isTaste(k) ? tasteKeywords(k) : KEYWORDS[k] || [k.replace(/-/g, " ")]).some(function (w) { return t.indexOf(w) >= 0; });
   });
 }
 

@@ -4,7 +4,10 @@ import { wixRequest } from "/js/org/client.js";
 import { imgSrc } from "/js/org/media.js";
 import { CARD_FIELDSETS, feedQuery, toSummary } from "/js/org/posts-core.js";
 import { fetchEventsPage } from "/js/org/events.js";
-import { gate, esc, stateBox, mediaBox, TONES } from "/js/app/common.js";
+import { gate, esc, stateBox, mediaBox, toast, TONES } from "/js/app/common.js";
+import { parseSong, guessTitle, loadSongs, shareSong, isMine, readyMe, deleteSong } from "/js/app/songs.js";
+import { songCard, st } from "/js/app/song-card.js";
+import { loadActions, has, toggle, onActions } from "/js/app/actions.js";
 
 var COUNTRIES = [
   ["IT", { it: "Italia", en: "Italy", es: "Italia" }, "var(--brand)"],
@@ -75,4 +78,55 @@ function loadLive() {
   }).catch(function () { box.innerHTML = stateBox(t("common.loadError")); });
 }
 
-gate("musica", function () { loadArticles(); loadLive(); });
+// 42: share a favourite song -> it appears in the Home feed of the whole community.
+var member = null, songs = null, songsErr = false;
+setText("songTitle", st("title")); setText("songsTitle", st("songs"));
+setText("songLinkLbl", st("link")); setText("songNameLbl", st("name")); setText("songArtistLbl", st("artist"));
+setText("songNoteLbl", st("note")); setText("songHint", st("hint")); setText("songSend", st("send"));
+var songForm = document.getElementById("songForm");
+var linkIn = document.getElementById("songLink"), nameIn = document.getElementById("songName");
+linkIn.setAttribute("placeholder", "https://open.spotify.com/track/…");
+linkIn.addEventListener("change", function () {
+  if (nameIn.value.trim()) return;
+  guessTitle(linkIn.value).then(function (tt) { if (tt && !nameIn.value.trim()) nameIn.value = tt; });
+});
+songForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+  var err = document.getElementById("songErr"), btn = document.getElementById("songSend");
+  err.textContent = "";
+  var f = songForm.elements;
+  var data = { link: f.link.value.trim(), title: f.title.value.trim(), artist: f.artist.value.trim(), note: f.note.value.trim() };
+  if ((!data.link || !parseSong(data.link)) && !(data.title && data.artist)) { err.textContent = st("needLink"); return; }
+  btn.disabled = true;
+  shareSong(data, member).then(function () { songForm.reset(); toast(st("sent")); return refreshSongs(); })
+    .catch(function () { err.textContent = t("act.error"); })
+    .then(function () { btn.disabled = false; });
+});
+function renderSongs() {
+  var box = document.getElementById("songs");
+  if (songsErr) { box.innerHTML = stateBox(t("common.loadError"), true); return; }
+  if (!songs) { box.innerHTML = '<div class="skeleton" style="height:140px"></div>'; return; }
+  if (!songs.length) { box.innerHTML = stateBox(st("empty")); return; }
+  box.innerHTML = '<div class="song-list">' + songs.slice(0, 12).map(function (r) { return songCard(r, { liked: has("like", "song-" + r._id), mine: isMine(r) }); }).join("") + "</div>";
+}
+function refreshSongs() {
+  songsErr = false;
+  return Promise.all([loadSongs(), readyMe()]).then(function (r) { songs = r[0]; renderSongs(); }).catch(function () { songsErr = true; renderSongs(); });
+}
+document.getElementById("songs").addEventListener("click", function (e) {
+  if (e.target.closest("[data-retry]")) { songs = null; renderSongs(); refreshSongs(); return; }
+  var d = e.target.closest("[data-del-song]");
+  if (d) {
+    var row = (songs || []).filter(function (x) { return x._id === d.dataset.delSong; })[0];
+    if (!row || !window.confirm(st("confirm"))) return;
+    deleteSong(row).then(function () { toast(st("removed")); return refreshSongs(); }).catch(function () { toast(t("act.error")); });
+    return;
+  }
+  var b = e.target.closest("[data-act]");
+  if (!b) return;
+  var r2 = (songs || []).filter(function (x) { return "song-" + x._id === b.dataset.id; })[0] || {};
+  toggle("like", b.dataset.id, { title: [r2.title, r2.artist].filter(Boolean).join(" — "), meta: r2.name || "", link: r2.link || "" }).catch(function () { toast(t("act.error")); });
+});
+onActions(renderSongs);
+
+gate("musica", function (s) { member = s.member; loadArticles(); loadLive(); refreshSongs(); loadActions().catch(function () {}); });

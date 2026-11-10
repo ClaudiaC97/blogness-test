@@ -6,12 +6,14 @@ import { fetchPostsInLanguage } from "/js/app/org-posts.js";
 import { loadActions, has, toggle, onActions, list as listActions } from "/js/app/actions.js";
 import { fx } from "/js/app/social-text.js";
 import { loadFollow, onFollow, friends } from "/js/app/follow.js";
+import { loadSongs, isMine, readyMe, deleteSong } from "/js/app/songs.js";
+import { songCard, st as songText } from "/js/app/song-card.js";
 import { gate, esc, toneFor, initialsOf, stateBox, toast, HEART, BOOKMARK, COMMENT, SEND, MUSIC, CAL, TONES } from "/js/app/common.js";
 
 var list = document.getElementById("list");
 var homeEl = document.getElementById("home");
 var current = "";
-var community = null, articles = null;
+var community = null, articles = null, songs = [];
 var errors = { community: null, articles: null };
 var member = null;
 var GRADS = ["linear-gradient(160deg,var(--gold),var(--heart) 45%,var(--brand))", "linear-gradient(200deg,var(--accent),#8FC1BE 60%,var(--soft))", "linear-gradient(150deg,var(--brand),var(--deep))", "linear-gradient(170deg,var(--t2),#8FA2B2)"];
@@ -93,10 +95,11 @@ function render() {
   renderHome();
   if (articles === null && community === null) { list.innerHTML = '<div class="pad"><div class="skeleton" style="height:260px"></div></div>'; return; }
   var arts = (articles || []).slice().sort(function (a, b) { return String(b.dateISO).localeCompare(String(a.dateISO)); });
-  var com = (community || []).slice().sort(function (a, b) { return String(b.dateISO).localeCompare(String(a.dateISO)); });
+  var com = (community || []).concat(songs.map(function (r) { return { kind: "song", row: r, id: "song-" + r._id, dateISO: r._createdDate || "" }; }))
+    .sort(function (a, b) { return String(b.dateISO).localeCompare(String(a.dateISO)); });
   var html = "";
   if (arts.length) html += '<div class="sechead"><h2>' + esc(fx("picked")) + '</h2><a href="/proposte.html">' + esc(fx("navScopri")) + '</a></div><div class="acards">' + arts.slice(0, 6).map(acard).join("") + "</div>";
-  if (com.length) html += '<div class="sechead"><h2>' + esc(fx("fromCommunity")) + "</h2></div>" + com.map(card).join("");
+  if (com.length) html += '<div class="sechead"><h2>' + esc(fx("fromCommunity")) + "</h2></div>" + com.map(function (it, i) { return it.kind === "song" ? songCard(it.row, { liked: has("like", it.id), mine: isMine(it.row) }) : card(it, i); }).join("");
   if (!html) html = '<div class="pad">' + ((errors.articles || errors.community) ? stateBox(t("common.loadError"), true) : stateBox(t("feed.empty"))) + "</div>";
   list.innerHTML = html;
 }
@@ -108,9 +111,14 @@ function load() {
   queryItems("feedPosts", { sort: [{ field: "publishedAt", direction: "desc" }], limit: 20 })
     .then(function (p) { community = normCommunity(p.items || []); render(); })
     .catch(function () { community = []; errors.community = true; render(); });
+  Promise.all([loadSongs(), readyMe()]).then(function (r) { songs = r[0] || []; render(); }).catch(function () { songs = []; });
 }
 
-function findItem(id) { return [].concat(articles || [], community || []).filter(function (x) { return x.id === id; })[0]; }
+function findItem(id) {
+  var song = songs.filter(function (r) { return "song-" + r._id === id; })[0];
+  if (song) return { kind: "song", id: id, title: [song.title, song.artist].filter(Boolean).join(" — "), author: song.name, link: song.link };
+  return [].concat(articles || [], community || []).filter(function (x) { return x.id === id; })[0];
+}
 function infoOf(it) { return { title: it.title || it.text || "", meta: it.kind === "article" ? t("feed.badge.articles") : (it.author || ""), link: it.slug ? "/post.html?slug=" + encodeURIComponent(it.slug) : "" }; }
 
 function likeOnce(id, el) {
@@ -145,6 +153,12 @@ list.addEventListener("click", function (e) {
     var url = its.slug ? "https://www.blogness.org/post/" + its.slug : location.origin + "/feed.html";
     if (navigator.share) navigator.share({ title: its.title || "Blogness", url: url }).catch(function () {});
     else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast(tx("feed.copied")); }).catch(function () {});
+    return;
+  }
+  var ds = e.target.closest("[data-del-song]");
+  if (ds) {
+    var row = songs.filter(function (x) { return x._id === ds.dataset.delSong; })[0];
+    if (row && window.confirm(songText("confirm"))) deleteSong(row).then(function () { songs = songs.filter(function (x) { return x !== row; }); render(); toast(songText("removed")); }).catch(function () { toast(t("act.error")); });
     return;
   }
   var b = e.target.closest("[data-act]");

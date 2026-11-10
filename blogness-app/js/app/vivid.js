@@ -49,7 +49,7 @@
       if (!reduce) burst(e.clientX, e.clientY);
     }, 30);
   });
-  var COLS = ["#FF6B57", "#F5A524", "#16A889", "#7B5CFF", "#2F8CFF", "#EE4F8F"];
+  var COLS = ["#2353C0", "#1EA7FF", "#8FD3FF", "#2353C0", "#1EA7FF", "#FFFFFF"];
   function burst(x, y) {
     for (var i = 0; i < 10; i++) {
       var p = document.createElement("span"), a = (Math.PI * 2 * i) / 10, r = 28 + Math.random() * 18;

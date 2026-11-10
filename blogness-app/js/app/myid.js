@@ -12,6 +12,7 @@ import { fx } from "/js/app/social-text.js";
 import { gate, esc, avatar, stateBox, toast, initialsOf, TONES } from "/js/app/common.js";
 import { wixRequest } from "/js/org/client.js";
 import { loadAffinity, myAffinity, setAffinity, affinityPeople } from "/js/app/affinity.js";
+import { TASTES, groupTitle, tasteLabel, isTaste, myTastes, hasTaste, toggleTaste } from "/js/app/tastes.js";
 
 // 34B: interests saved on blogness.org ("My interests" page) as a member custom field: "travel,art-design".
 var INTEREST = {
@@ -25,6 +26,7 @@ var INTEREST = {
 };
 var interests = null; // null = loading, [] = none, false = error
 function interestLabel(k) {
+  if (isTaste(k)) return tasteLabel(k);
   var row = INTEREST[k];
   if (row) return row[LANG === "en" ? 1 : LANG === "es" ? 2 : 0];
   var w = k.replace(/[-_]+/g, " ").trim();
@@ -41,6 +43,12 @@ function loadInterests() {
   }).catch(function () { interests = false; if (!tab) render(); });
 }
 
+var TS = {
+  it: { tastes: "I tuoi gusti", tastesLead: "Generi musicali, film e sport che ami: le proposte e le persone affini seguiranno i tuoi gusti.", tastesEdit: "Gusti", tastesAdd: "Aggiungi i tuoi gusti: musica, film e sport", saved: "Salvato" },
+  en: { tastes: "Your tastes", tastesLead: "Music genres, films and sports you love: suggestions and like-minded people will follow your taste.", tastesEdit: "Tastes", tastesAdd: "Add your tastes: music, films and sport", saved: "Saved" },
+  es: { tastes: "Tus gustos", tastesLead: "Géneros musicales, cine y deportes que te encantan: las propuestas y las personas afines seguirán tus gustos.", tastesEdit: "Gustos", tastesAdd: "Añade tus gustos: música, cine y deporte", saved: "Guardado" }
+};
+function ts(k) { return (TS[LANG] || TS.it)[k]; }
 var S = {
   it: { settings: "Impostazioni", edit: "Modifica profilo", share: "Condividi", today: "Oggi", yourDay: "La tua giornata", what: "Cosa vuoi fare", allOn: "Tutte le voci", allOff: "Meno voci", week: "Questa settimana", trip: "Prossimo viaggio", tripEmpty: "Nessun viaggio salvato. Scegli una meta tra le proposte.", tripCta: "Scegli un viaggio", wish: "Wishlist", seeAll: "Vedi tutto", wishEmpty: "La tua wishlist è vuota.", people: "Persone da conoscere", peopleNote: "Dalla community di Blogness.", follow: "Segui", following: "Segui già", motto: "Racconta in una frase le cose che ti muovono", since: "Su Blogness da {d}", gear: "Impostazioni", dayEmpty: "Niente in agenda oggi. Pianifica la giornata o scegli un evento.", interests: "I tuoi interessi", change: "Modifica", add: "Aggiungi", interestsEmpty: "Scegli i tuoi interessi: le proposte e le persone suggerite seguiranno i tuoi gusti.", interestsCta: "Scegli gli interessi", shareInt: "Mostra i miei interessi per trovare persone affini", shareNote: "Li vedono solo gli iscritti che condividono a loro volta i propri. Puoi disattivarlo quando vuoi.", sharedOn: "Interessi condivisi.", sharedOff: "Interessi non più condivisi.", inCommon: "In comune", peopleAff: "Persone che condividono i tuoi interessi.", peopleNone: "Ancora nessuno con interessi in comune. Intanto, dalla community:", peopleOff: "Attiva «Mostra i miei interessi» per vedere le persone affini. Intanto, dalla community:" },
   en: { settings: "Settings", edit: "Edit profile", share: "Share", today: "Today", yourDay: "Your day", what: "What would you like to do", allOn: "All options", allOff: "Fewer options", week: "This week", trip: "Next trip", tripEmpty: "No saved trip yet. Pick a destination from the suggestions.", tripCta: "Pick a trip", wish: "Wishlist", seeAll: "See all", wishEmpty: "Your wishlist is empty.", people: "People to meet", peopleNote: "From the Blogness community.", follow: "Follow", following: "Following", motto: "Tell us in one line what moves you", since: "On Blogness since {d}", gear: "Settings", dayEmpty: "Nothing on today. Plan your day or pick an event.", interests: "Your interests", change: "Edit", add: "Add", interestsEmpty: "Pick your interests: suggestions and people will follow your taste.", interestsCta: "Pick interests", shareInt: "Show my interests to find like-minded people", shareNote: "Only members who share their own interests can see them. You can turn this off anytime.", sharedOn: "Interests shared.", sharedOff: "Interests no longer shared.", inCommon: "In common", peopleAff: "People who share your interests.", peopleNone: "No one with interests in common yet. Meanwhile, from the community:", peopleOff: "Turn on “Show my interests” to see like-minded people. Meanwhile, from the community:" },
@@ -106,7 +114,7 @@ var V = {
   pub: ["vPub", "vPubS", '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', "https://www.blogness.org/community-hub"],
   share: ["vShare", "vShareS", '<path d="M12 3v12"/><path d="m7.5 7.5 4.5-4.5 4.5 4.5"/><path d="M5 13v6.5h14V13"/>', "#share"],
   day: ["vDay", "vDayS", '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>', "/proposte.html?tab=day"],
-  trip: ["vTrip", "vTripS", '<path d="M2.5 13.5 21 6l-4.5 14-4-6-6-1.5z"/><path d="m12.5 14 4-4"/>', "/proposte.html?tab=trips"],
+  trip: ["vTrip", "vTripS", '<path d="M2.5 13.5 21 6l-4.5 14-4-6-6-1.5z"/><path d="m12.5 14 4-4"/>', "/viaggio.html"],
   chat: ["vChat", "vChatS", '<path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5z"/>', "/contatti.html?tab=chat"],
   events: ["vEvents", "vEventsS", '<path d="M3.5 9V7a1.5 1.5 0 0 1 1.5-1.5h14A1.5 1.5 0 0 1 20.5 7v2a2.5 2.5 0 0 0 0 5v2a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 16v-2a2.5 2.5 0 0 0 0-5z"/><path d="M14.5 6v2.5M14.5 11v2M14.5 15.5V18"/>', "?tab=day"],
   wish: ["vWish", "vWishS", '<rect x="3.5" y="8" width="17" height="4.5" rx="1"/><path d="M5 12.5V20h14v-7.5M12 8v12"/><path d="M12 8c-1.5-3.5-5.5-3.5-5.5-1S10 8 12 8c2 0 5.5 0 5.5-1S13.5 4.5 12 8z"/>', "?tab=wish"],
@@ -116,7 +124,7 @@ var V = {
 };
 var TILES = ["pub", "day", "trip", "share", "chat", "events"];
 var ORDER = ["pub", "share", "day", "trip", "chat", "events", "wish", "saved", "music", "profile"];
-var SUBTITLE = { day: "vEvents", wish: "vWish", saved: "vSaved", profile: "settings" };
+var SUBTITLE = { day: "vEvents", wish: "vWish", saved: "vSaved", profile: "settings", tastes: "tastes" };
 
 function linkAttrs(k) {
   var v = V[k], ext = v[3].indexOf("http") === 0;
@@ -190,18 +198,24 @@ function interestsHtml() {
   else if (interests === false || !interests.length) h += '<div class="my-empty"><p>' + esc(s("interestsEmpty")) + '</p><a class="btn primary" href="' + editUrl + '" target="_blank" rel="noopener">' + esc(s("interestsCta")) + "</a></div>";
   else h += '<div class="my-chips">' + interests.map(function (k) { return '<span class="my-chip">' + esc(interestLabel(k)) + "</span>"; }).join("") +
     '<a class="my-chip add" href="' + editUrl + '" target="_blank" rel="noopener">+ ' + esc(s("add")) + "</a></div>";
+  var mt = ready ? myTastes() : [];
+  if (mt.length) h += '<div class="my-tastes">' + Object.keys(TASTES).map(function (g) {
+    var mine = mt.filter(function (k) { return k.indexOf(g + ":") === 0; });
+    return mine.length ? "<span><b>" + esc(groupTitle(g)) + ":</b> " + esc(mine.map(tasteLabel).join(", ")) + "</span>" : "";
+  }).join("") + '<a class="my-chip add" style="align-self:flex-start;margin-top:4px" href="?tab=tastes">' + esc(ts("tastesEdit")) + " →</a></div>";
+  else if (ready) h += '<a class="my-chip add" style="margin-top:12px" href="?tab=tastes">+ ' + esc(ts("tastesAdd")) + "</a>";
   if (Array.isArray(interests) && interests.length) h += '<label class="my-switch"><input type="checkbox" id="shareInt"' + (myAffinity() ? " checked" : "") + (affBusy ? " disabled" : "") + '><span><b>' + esc(s("shareInt")) + "</b><small>" + esc(s("shareNote")) + "</small></span></label>";
   return h + "</section>";
 }
 
 function tripHtml() {
-  var trips = ready ? listActions("save").filter(function (r) { return String(r.refId || "").indexOf("trip-") === 0; }) : [];
-  var h = '<section class="my-sec"><div class="my-sh"><h2>' + esc(s("trip")) + "</h2></div>";
+  var trips = ready ? listActions("trip").concat(listActions("save").filter(function (r) { return String(r.refId || "").indexOf("trip-") === 0; })) : [];
+  var h = '<section class="my-sec"><div class="my-sh"><h2>' + esc(s("trip")) + '</h2><a href="/viaggio.html">' + esc(fx("vTrip")) + "</a></div>";
   if (trips.length) {
     var tr = trips[0];
     h += '<a class="my-trip" href="' + esc(tr.link || "/proposte.html?tab=trips") + '"><div class="ph"></div><div class="bd"><b>' + esc(tr.title) + "</b>" + (tr.meta ? "<span>" + esc(tr.meta) + "</span>" : "") + "</div></a>";
   } else {
-    h += '<div class="my-empty"><p>' + esc(s("tripEmpty")) + '</p><a class="btn primary" href="/proposte.html?tab=trips">' + esc(s("tripCta")) + "</a></div>";
+    h += '<div class="my-empty"><p>' + esc(s("tripEmpty")) + '</p><a class="btn primary" href="/viaggio.html">' + esc(s("tripCta")) + "</a></div>";
   }
   return h + "</section>";
 }
@@ -228,7 +242,7 @@ function peopleHtml() {
   var shared = !!myAffinity();
   var h = '<section class="my-sec"><div class="my-sh"><h2>' + esc(s("people")) + '</h2><a href="/contatti.html">' + esc(s("seeAll")) + "</a></div>";
   if (shared && Array.isArray(interests)) {
-    var aff = affinityPeople(interests).slice(0, 4);
+    var aff = affinityPeople(interests.concat(ready ? myTastes() : [])).slice(0, 4);
     if (aff.length) return h + '<p class="my-note">' + esc(s("peopleAff")) + '</p><div class="my-people">' + aff.map(personRow).join("") + "</div></section>";
     h += '<p class="my-note">' + esc(s("peopleNone")) + "</p>";
   } else {
@@ -242,11 +256,11 @@ function peopleHtml() {
 var affBusy = false;
 function affInfo() {
   var m = member || {};
-  return { name: m.firstName || m.nickname || m.displayName || "", photo: m.photoUrl || "", interests: Array.isArray(interests) ? interests : [] };
+  return { name: m.firstName || m.nickname || m.displayName || "", photo: m.photoUrl || "", interests: (Array.isArray(interests) ? interests : []).concat(ready ? myTastes() : []) };
 }
 function syncAff() {
   var mine = myAffinity();
-  if (mine && Array.isArray(interests) && String(mine.interests || "") !== interests.join(",")) setAffinity(true, affInfo()).catch(function () {});
+  if (mine && Array.isArray(interests) && String(mine.interests || "") !== affInfo().interests.join(",")) setAffinity(true, affInfo()).catch(function () {});
 }
 document.addEventListener("change", function (e) {
   if (!e.target || e.target.id !== "shareInt") return;
@@ -270,6 +284,7 @@ function render() {
   document.getElementById("profileBox").hidden = tab !== "profile";
   if (tab === "profile") { renderProfile(); listEl.innerHTML = ""; return; }
   if (tab === "wish") { listEl.innerHTML = wishView(); return; }
+  if (tab === "tastes") { document.getElementById("subTitle").textContent = ts("tastes"); listEl.innerHTML = tastesView(); return; }
   if (failed) { listEl.innerHTML = '<div class="pad">' + stateBox(t("common.loadError"), true) + "</div>"; return; }
   if (!ready) { listEl.innerHTML = '<div class="pad"><div class="skeleton" style="height:180px"></div></div>'; return; }
   if (tab === "day") {
@@ -278,6 +293,15 @@ function render() {
   } else listEl.innerHTML = rowsGrid(listActions(["save", "like"]).filter(function (r) { return r.title; }), "me.savedEmpty");
 }
 
+function tastesView() {
+  if (!ready) return '<div class="pad"><div class="skeleton" style="height:180px"></div></div>';
+  return '<p class="my-note" style="margin:0 20px">' + esc(ts("tastesLead")) + "</p>" + Object.keys(TASTES).map(function (g) {
+    return '<section class="taste-group"><h2>' + esc(groupTitle(g)) + '</h2><div class="taste-chips">' + Object.keys(TASTES[g].items).map(function (k) {
+      var key = g + ":" + k, on = hasTaste(key);
+      return '<button type="button" data-taste="' + esc(key) + '" aria-pressed="' + on + '">' + esc(tasteLabel(key)) + "</button>";
+    }).join("") + "</div></section>";
+  }).join("");
+}
 function loadAll() {
   failed = false; wish.error = false;
   loadActions().then(function () { ready = true; render(); }).catch(function () { failed = true; render(); });
@@ -304,13 +328,15 @@ document.addEventListener("click", function (e) {
     Promise.resolve(setFollow(id, !isFollowing(id))).then(render).catch(function () { toast(t("act.error")); });
     return;
   }
+  var tb = e.target.closest("[data-taste]");
+  if (tb) { toggleTaste(tb.dataset.taste).then(syncAff).catch(function () { toast(t("act.error")); }); return; }
   var gift = e.target.closest("[data-gift]");
   if (gift) {
     var it = (wish.friends || []).filter(function (x) { return x._id === gift.dataset.gift; })[0] || {};
     toggle("gift", "wish-" + it._id, { title: it.itemTitle, meta: it.friendName }).catch(function () { toast(t("act.error")); });
   }
 });
-onActions(function () { if (ready) render(); });
+onActions(function () { if (ready) { render(); } });
 
 var langSel = document.getElementById("lang");
 langSel.value = langPref();
